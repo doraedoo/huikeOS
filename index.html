@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>回客 - 帮老板记住每一位客户</title>
+    <title>回客 - 让每一段关系都不被遗忘</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,280 +12,449 @@
             --secondary: #FF6EC7;
             --bg: #FFFFFF;
             --text-main: #111827;
-            --text-muted: #4B5563;
+            --text-muted: #6B7280;
             --border: #E5E7EB;
             --bg-light: #FAFAFA;
         }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); position: relative; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); -webkit-font-smoothing: antialiased; }
         h1, h2, h3, h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 600; letter-spacing: -0.02em; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
-        a { color: inherit; text-decoration: none; }
-        
-        /* 氛围减淡：保持高级与克制 */
-        .ambient-glow { position: absolute; border-radius: 50%; filter: blur(180px); pointer-events: none; }
-        .ambient-glow-1 { width: 1200px; height: 1200px; background: radial-gradient(circle, rgba(109, 74, 255, 0.12) 0%, transparent 70%); top: -400px; left: -300px; }
-        .ambient-glow-2 { width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(255, 110, 199, 0.08) 0%, transparent 70%); bottom: -300px; right: -400px; }
-        
-        /* 右侧悬浮导航 */
-        .timeline-nav { position: fixed; right: 40px; top: 50%; transform: translateY(-50%); z-index: 40; display: flex; flex-direction: column; gap: 16px; padding: 24px 16px; background: rgba(255, 255, 255, 0.8); border-radius: 24px; border: 1px solid rgba(109, 74, 255, 0.08); backdrop-filter: blur(10px); }
-        .timeline-item { width: 12px; height: 12px; border-radius: 50%; background: rgba(109, 74, 255, 0.2); border: 2px solid rgba(109, 74, 255, 0.1); cursor: pointer; transition: all 0.3s ease; }
-        .timeline-item:hover { transform: scale(1.2); }
-        .timeline-item.active { background: var(--primary); border-color: var(--primary); box-shadow: 0 0 0 6px rgba(109, 74, 255, 0.1); width: 16px; height: 16px; margin-left: -2px; }
-        
-        .section { padding: 120px 0; background-color: var(--bg); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; scroll-margin-top: 100px; }
-        .section:last-child { border-bottom: none; }
-        
-        /* Hero 屏 */
-        .hero { min-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; text-align: center; position: relative; }
-        .hero-title { font-size: 88px; font-weight: 700; line-height: 1.15; margin-bottom: 24px; color: var(--text-main); letter-spacing: -0.03em; }
-        .hero-subtitle { font-size: 32px; font-weight: 400; color: var(--text-muted); margin-bottom: 36px; }
-        .hero-brand-block { margin-bottom: 48px; }
-        .hero-brand-name { font-size: 56px; font-weight: 700; color: var(--primary); margin-bottom: 8px; letter-spacing: -0.01em; }
-        .hero-brand-desc { font-size: 26px; font-weight: 700; color: var(--primary); }
-        .btn-primary { display: inline-block; background-color: var(--primary); color: #FFF; padding: 16px 48px; border-radius: 20px; font-size: 16px; font-weight: 500; border: none; cursor: pointer; transition: all 200ms ease; box-shadow: 0 10px 30px rgba(109, 74, 255, 0.2); }
-        .btn-primary:hover { background-color: #5a3dd1; transform: translateY(-2px); }
-        
-        /* 独立陈述屏（微调换行与呼吸感，纯静态无动效） */
-        .statement-section { min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 60px 40px; text-align: center; }
-        .statement-text { font-size: 64px; font-weight: 600; line-height: 1.4; max-width: 900px; color: var(--text-main); }
-        .statement-text .line-break-gap { display: block; margin-bottom: 28px; } /* 留出 28px 呼吸感 */
-        
-        /* 规模痛点屏 */
-        .scale-pain-section { min-height: 85vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 40px; text-align: center; }
-        .scale-pain-title { font-size: 56px; font-weight: 600; line-height: 1.3; margin-bottom: 60px; max-width: 700px; }
-        .scale-pain-grid { display: grid; grid-template-columns: 1fr; gap: 35px; max-width: 600px; margin: 0 auto; margin-bottom: 40px; width: 100%; }
-        .scale-pain-item { padding: 24px 0; border-bottom: 1px solid var(--border); }
-        .scale-pain-item:last-child { border-bottom: none; }
-        .scale-pain-number { font-size: 32px; font-weight: 700; color: var(--primary); margin-bottom: 8px; }
-        .scale-pain-desc { font-size: 16px; font-weight: 400; color: var(--text-muted); }
-        
-        /* Journey 链路屏 */
-        .journey-section { padding: 120px 40px; background: linear-gradient(180deg, rgba(109, 74, 255, 0.02) 0%, rgba(255, 110, 199, 0.01) 100%); }
-        .journey-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 100px; align-items: flex-start; }
-        .journey-text { padding-top: 40px; }
-        .journey-text h2 { font-size: 64px; font-weight: 700; color: var(--text-main); line-height: 1.35; }
-        
-        .journey-nodes { display: flex; flex-direction: column; gap: 0; }
-        .journey-node { display: flex; gap: 32px; align-items: flex-start; position: relative; padding-bottom: 50px; }
-        .journey-node:not(:last-child)::after { content: ''; position: absolute; left: 44px; top: 90px; width: 3px; height: 50px; background: linear-gradient(to bottom, rgba(109, 74, 255, 0.4) 0%, rgba(109, 74, 255, 0.1) 100%); }
-        .node-icon { width: 90px; height: 90px; border-radius: 20px; background: linear-gradient(135deg, rgba(109, 74, 255, 0.1) 0%, rgba(255, 110, 199, 0.06) 100%); border: 2px solid rgba(109, 74, 255, 0.2); display: flex; align-items: center; justify-content: center; font-size: 38px; flex-shrink: 0; }
-        .node-text { padding-top: 12px; }
-        .node-text h3 { font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
-        .node-text p { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
-        .journey-node:nth-child(4) .node-icon { box-shadow: 0 16px 48px rgba(109, 74, 255, 0.12); background: linear-gradient(135deg, rgba(109, 74, 255, 0.16) 0%, rgba(255, 110, 199, 0.1) 100%); border-color: rgba(109, 74, 255, 0.3); }
-        
-        /* 过渡区 */
-        .bridge-transition { padding: 90px 40px; background: #FFFFFF; text-align: center; border-bottom: 1px solid var(--border); }
-        .bridge-transition p { font-family: 'Noto Serif SC', serif; font-size: 40px; font-weight: 600; color: var(--text-main); line-height: 1.6; }
-        .bridge-transition span.highlight-purple { color: var(--primary); font-weight: 700; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 
-        /* 两栏细节容器 */
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 120px; align-items: flex-start; padding: 120px 40px; max-width: 1200px; margin: 0 auto; }
-        .two-column-left { max-width: 480px; padding-top: 60px; }
-        .two-column-left h2 { font-size: 68px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
-        .two-column-left .chapter-subtitle { font-size: 18px; font-weight: 500; color: var(--text-muted); line-height: 1.6; }
-        .two-column-right { display: flex; justify-content: center; width: 100%; }
-        .two-column.reverse .two-column-left { order: 2; }
-        .two-column.reverse .two-column-right { order: 1; }
-        
-        /* 静态化卡片展示 */
-        .product-screenshot { background: var(--bg); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; max-width: 520px; width: 100%; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.04); display: flex; flex-direction: row; height: 620px; position: relative; }
-        
-        /* 后台模拟内衬组件 */
-        .app-sidebar { background: var(--bg); border-right: 1px solid var(--border); width: 60px; display: flex; flex-direction: column; align-items: center; padding: 16px 8px; gap: 20px; flex-shrink: 0; }
-        .sidebar-icon { width: 32px; height: 32px; border-radius: 10px; background: var(--bg-light); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-muted); }
-        .sidebar-icon.active { background: var(--primary); color: #FFF; }
-        .app-main { flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #fff; }
-        .app-topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; gap: 16px; }
-        .topbar-search { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 12px; background: var(--bg-light); }
-        .app-navbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 24px; font-size: 12px; font-weight: 600; }
-        .app-nav-item { color: var(--text-muted); padding: 6px 8px; }
-        .app-nav-item.active { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 4px; }
-        .app-content { padding: 20px 16px; font-size: 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 14px; }
-        .app-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-        .app-stat-box { background: var(--bg-light); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
-        .app-stat-value { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
-        .app-stat-label { font-size: 11px; color: var(--text-muted); }
-        .app-list { display: flex; flex-direction: column; gap: 10px; }
-        .app-list-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; gap: 12px; align-items: center; }
-        .app-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); font-size: 11px; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-        .app-list-content { flex: 1; }
-        .app-list-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-        .app-list-meta { font-size: 11px; color: var(--text-muted); }
-        
-        .app-tags-wrapper { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-        .app-tag-badge { background: #F3F4F6; color: #1F2937; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 500; }
-        .app-tag-badge.accent { background: rgba(109, 74, 255, 0.08); color: var(--primary); }
-        
-        .app-timeline-mini { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; position: relative; padding-left: 12px; }
-        .app-timeline-mini::before { content: ''; position: absolute; left: 3px; top: 4px; bottom: 4px; width: 1px; background: var(--border); }
-        .app-timeline-node { position: relative; font-size: 11px; line-height: 1.4; }
-        .app-timeline-node::before { content: ''; position: absolute; left: -12px; top: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
-        .app-timeline-node.highlight::before { background: var(--primary); }
-        
-        /* 关系网络视效 */
-        .net-grid-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-        .net-stat-card { background: var(--bg-light); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center; }
-        .net-stat-card .num { font-size: 16px; font-weight: 700; color: var(--text-main); }
-        .net-stat-card .num.primary-color { color: var(--primary); }
-        .net-stat-card .label { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
-        
-        .network-visual-box { background: var(--bg-light); border: 1px solid var(--border); border-radius: 12px; padding: 14px; flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .net-row { display: flex; justify-content: center; position: relative; width: 100%; }
-        .net-node-card { background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; text-align: center; display: inline-block; box-shadow: 0 2px 6px rgba(0,0,0,0.02); min-width: 90px; }
-        .net-node-card.root { border: 2px solid var(--primary); box-shadow: 0 4px 12px rgba(109, 74, 255, 0.08); }
-        .net-node-title { font-size: 11px; font-weight: 700; }
-        .net-node-val { font-size: 10px; font-weight: 600; margin-top: 1px; }
-        .net-node-val.p-color { color: var(--primary); }
-        .net-node-val.s-color { color: #10B981; }
-        
-        .net-connector-line { width: 2px; height: 14px; background: var(--border); margin: 0 auto; position: relative; }
-        .net-split-row { display: flex; justify-content: space-around; width: 100%; position: relative; }
-        .net-split-row::before { content: ''; position: absolute; top: 0; left: 25%; right: 25%; height: 1px; background: var(--border); }
-        .net-split-column { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0; height: 80px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5); z-index: 100;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; height: 100%; }
+        .logo-area { display: flex; flex-direction: column; }
+        .logo-text { font-size: 22px; font-weight: 700; color: var(--text-main); line-height: 1; }
+        .logo-sub { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-family: 'Inter', sans-serif; font-weight: 500; }
 
-        .journey-label { position: absolute; right: 20px; top: 16px; z-index: 30; pointer-events: none; font-family: 'Noto Serif SC', serif; font-size: 28px; font-weight: 700; color: var(--primary); opacity: 0.12; }
-        
-        .beta-section { padding: 100px 40px; text-align: center; max-width: 760px; margin: 0 auto; }
-        .beta-section h2 { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 600; line-height: 1.4; margin-bottom: 24px; color: var(--text-main); }
-        .beta-desc { font-size: 18px; color: var(--text-muted); line-height: 1.8; margin-bottom: 0px; font-family: 'Noto Serif SC', serif; }
-        
-        footer { padding: 40px 40px; background: var(--bg); border-top: 1px solid var(--border); }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-muted); }
-        .footer-left { font-weight: 500; }
-        .footer-right { font-size: 13px; opacity: 0.8; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; text-decoration: none;
+        }
+        .btn-primary { background: var(--text-main); color: var(--bg); border: 1px solid var(--text-main); }
+        .btn-primary:hover { background: #1f2937; border-color: #1f2937; }
 
+        /* Hero Section */
+        .hero { 
+            padding-top: 80px; 
+            padding-bottom: 0; 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; 
+            align-items: center;
+        }
+        
+        .hero-grid { 
+            display: grid; 
+            grid-template-columns: 1.15fr 0.85fr; 
+            gap: 64px; 
+            align-items: center; 
+            width: 100%; 
+        }
+
+        .hero-grid > div:first-child {
+            padding-right: 24px;
+        }
+        
+        .hero-title { font-family: 'Noto Serif SC', serif; font-size: 46px; line-height: 1.4; color: #0C111D; margin-bottom: 24px; font-weight: 700; letter-spacing: 0.02em; }
+        .hero-value { font-size: 16px; font-weight: 500; color: var(--text-muted); margin-bottom: 40px; line-height: 1.8; letter-spacing: 0.05em; }
+        
+        .hero-desc-group { margin-bottom: 40px; font-family: 'Noto Serif SC', serif; }
+        .hero-brand-highlight { font-size: 38px; font-weight: 700; color: #5334E9; display: block; margin-bottom: 8px; letter-spacing: 0.03em; }
+        .hero-desc-text { font-size: 26px; font-weight: 600; color: #5334E9; line-height: 1.4; letter-spacing: 0.01em; }
+        
+        .btn-hero-capture { background: #0F1322; color: #FFFFFF; padding: 14px 44px; border-radius: 8px; font-size: 15px; font-weight: 500; border: none; letter-spacing: 0.05em; cursor: pointer; transition: background 0.2s; }
+        .btn-hero-capture:hover { background: #1D243D; }
+
+        /* App UI Mockups */
+        .ui-viewport { 
+            background: #FFFFFF; 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.01); 
+            padding: 36px; 
+            position: relative;
+            width: 100%;
+            max-width: 440px; 
+            margin-left: auto; 
+        }
+        .ui-viewport::before {
+            content: ''; position: absolute; -webkit-border-radius: 16px; border-radius: 16px; inset: -1px;
+            background: linear-gradient(135deg, rgba(109,74,255,0.03) 0%, rgba(255,110,199,0.02) 100%);
+            pointer-events: none; z-index: -1;
+        }
+        .action-card { background: #FFFFFF; border: 1px solid #F3F4F6; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+        .action-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .action-name { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .action-status { font-size: 11px; color: #D97706; background: #FFFBEB; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+        .action-body { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+        .action-footer { display: flex; justify-content: flex-end; }
+        .action-btn { background: var(--text-main); color: #FFF; font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 4px; border: none; cursor: pointer; }
+        .memo-note { background: #FFFDF2; border: 1px solid #F7F3D7; border-radius: 8px; padding: 18px; font-size: 13px; line-height: 1.6; color: #78350F; }
+        .memo-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #B45309; margin-bottom: 6px; }
+
+        /* Statement Screen */
+        .statement-section { padding: 160px 0; background-color: var(--bg-light); text-align: center; }
+        .statement-text { font-size: 32px; line-height: 2.2; color: var(--text-main); font-weight: 500; letter-spacing: 0.02em; }
+
+        /* Scale Section */
+        .scale-section { padding: 140px 0; border-bottom: 1px solid var(--border); }
+        .scale-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .scale-card { text-align: center; padding: 20px; }
+        .scale-num { font-size: 13px; font-weight: 700; color: #9CA3AF; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.15em; }
+        .scale-title { font-size: 36px; color: var(--text-main); margin-bottom: 12px; font-weight: 600; }
+        .scale-desc { font-size: 14px; color: var(--text-muted); }
+
+        /* 打字机标题包裹容器：确保在整个页面视口彻底居中 */
+        .journey-header-wrapper {
+            width: 100%;
+            padding-top: 140px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .journey-header { 
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 32px;
+            text-align: center; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .journey-statement-wrapper {
+            display: inline-grid;
+            grid-template-columns: 1fr;
+            align-items: center;
+            justify-items: center;
+            position: relative;
+        }
+
+        .journey-statement { 
+            grid-area: 1 / 1 / 2 / 2;
+            font-size: 36px; 
+            line-height: 1.4; 
+            color: var(--text-main); 
+            font-weight: 600; 
+            text-align: center;
+            white-space: nowrap;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .journey-statement-placeholder {
+            grid-area: 1 / 1 / 2 / 2;
+            font-size: 36px; 
+            line-height: 1.4; 
+            font-weight: 600; 
+            white-space: nowrap;
+            visibility: hidden;
+            pointer-events: none;
+            user-select: none;
+        }
+        
+        .journey-statement::after { 
+            content: '|'; 
+            position: absolute; 
+            right: -16px; 
+            top: -2px;
+            color: var(--primary); 
+            animation: blink 0.7s infinite; 
+            font-weight: 400; 
+        }
+        .journey-statement.typing-done::after { display: none; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Sidebar Sticky Navigation Layout */
+        .journey-layout { display: flex; gap: 80px; position: relative; padding: 40px 0 0 0; }
+        .sidebar-nav { width: 180px; position: sticky; top: 180px; height: fit-content; flex-shrink: 0; z-index: 10; }
+        .timeline-indicator { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .timeline-indicator::before { content: ''; position: absolute; left: 7px; top: 10px; bottom: 10px; width: 1px; background-color: var(--border); z-index: 1; }
+        .timeline-item { display: flex; align-items: center; gap: 16px; padding: 14px 0; cursor: pointer; position: relative; z-index: 2; }
+        .timeline-dot { width: 15px; height: 15px; border-radius: 50%; background-color: var(--bg); border: 1px solid var(--border); transition: all 0.3s ease; }
+        .timeline-label { font-size: 13px; font-weight: 500; color: #9CA3AF; transition: all 0.3s ease; }
+        
+        .timeline-item.active .timeline-dot { background-color: var(--primary); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(109, 74, 255, 0.12); }
+        .timeline-item.active .timeline-label { color: var(--primary); font-weight: 600; }
+        .timeline-item.passed .timeline-dot { background-color: var(--text-main); border-color: var(--text-main); }
+        .timeline-item.passed .timeline-label { color: var(--text-main); }
+
+        .journey-flow { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+        
+        .journey-section { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; padding: 100px 0; border-bottom: 1px solid rgba(229, 231, 235, 0.4); }
+        .section-meta { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; }
+        .section-title { font-size: 32px; color: var(--text-main); margin-bottom: 18px; font-weight: 600; }
+        .section-desc { font-size: 15px; color: var(--text-muted); line-height: 1.7; }
+
+        .app-box { background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+        .app-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F3F4F6; font-size: 13px; }
+        .app-row:last-child { border-bottom: none; }
+        .app-tag { font-size: 11px; font-weight: 500; padding: 2px 6px; border-radius: 4px; }
+
+        .network-svg-container {
+            position: relative;
+            width: 100%;
+            height: 210px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #FFFFFF;
+            border-radius: 6px;
+            border: 1px solid rgba(229, 231, 235, 0.6);
+        }
+
+        /* Terminal Footer Block */
+        .terminal-block {
+            width: 100%;
+            border-top: 1px solid rgba(229, 231, 235, 0.6);
+            background-color: var(--bg);
+            padding-bottom: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .terminal-line {
+            width: 1px;
+            height: 160px;
+            background: linear-gradient(to bottom, rgba(229,231,235,0.8) 0%, var(--primary) 100%);
+        }
+
+        .terminal-dot-center {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 24px rgba(109, 74, 255, 0.35);
+            margin-top: -2px;
+            margin-bottom: 48px;
+        }
+
+        .terminal-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 64px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        .terminal-slogan {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 64px;
+        }
+
+        .terminal-card-box {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 64px 80px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.015);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .card-secondary-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .card-sub-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 36px;
+        }
+
+        .card-btn {
+            width: 100%;
+            max-width: 320px;
+            padding: 16px;
+            background: var(--text-main);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: background 0.2s;
+        }
+        .card-btn:hover { background: #1f2937; }
+
+        /* Footer */
+        footer { 
+            padding: 140px 0 60px 0; 
+            border-top: 1px solid rgba(229, 231, 235, 0.6); 
+            background: #FFFFFF; 
+        }
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .footer-left-group {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .footer-brand {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+        }
+        .footer-divider {
+            width: 1px;
+            height: 14px;
+            background-color: #D1D5DB;
+        }
+        .footer-slogan-single {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: #4B5563;
+            letter-spacing: 0.05em;
+            word-spacing: 0.1em;
+        }
+        .footer-right-copyright {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #9CA3AF;
+            letter-spacing: 0.02em;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .section { padding: 80px 20px; }
             .container { padding: 0 20px; }
-            .journey-section { padding: 80px 20px; }
-            .two-column { grid-template-columns: 1fr; gap: 40px; padding: 40px 0; }
-            .two-column-left { padding-top: 0; max-width: 100%; }
-            .two-column.reverse .two-column-left { order: 0; }
-            .two-column.reverse .two-column-right { order: 1; }
-            .timeline-nav { display: none; }
-            .hero-title { font-size: 48px; }
-            .hero-subtitle { font-size: 24px; }
-            .hero-brand-name { font-size: 42px; }
-            .hero-brand-desc { font-size: 20px; }
-            .journey-text h2 { font-size: 42px; }
-            .bridge-transition p { font-size: 26px; }
-            .journey-content { grid-template-columns: 1fr; gap: 40px; }
-            .statement-text { font-size: 38px; }
-            .statement-text .line-break-gap { margin-bottom: 16px; }
-            .scale-pain-title { font-size: 36px; margin-bottom: 40px; }
-            .scale-pain-grid { gap: 24px; margin-bottom: 30px; }
-            .scale-pain-item { padding: 16px 0; }
-            .journey-node:not(:last-child)::after { left: 44px; top: 90px; height: 50px; }
-            .product-screenshot { max-width: 100%; height: 540px; }
-            .beta-section { padding: 60px 0; }
-            .beta-section h2 { font-size: 28px; }
-            .beta-desc { font-size: 16px; }
-            .footer-content { flex-direction: column; gap: 12px; text-align: center; }
-            h2 { font-size: 38px; }
+            nav { height: 70px; }
+            .logo-text { font-size: 18px; }
+            .logo-sub { font-size: 9px; }
+
+            .hero { padding-top: 100px; min-height: auto; }
+            .hero-grid { grid-template-columns: 1fr; gap: 32px; text-align: left; }
+            .hero-grid > div:first-child { padding-right: 0; }
+            .hero-title { font-size: 32px; margin-bottom: 16px; }
+            .hero-value { font-size: 20px; margin-bottom: 16px; }
+            .hero-brand-highlight { font-size: 30px; }
+            .hero-desc-text { font-size: 22px; }
+            
+            .ui-viewport { padding: 24px; max-width: 100%; margin-left: 0; }
+            .statement-section { padding: 100px 0; }
+            .statement-text { font-size: 24px; line-height: 2; }
+            .scale-section { padding: 80px 0; }
+            .scale-grid { grid-template-columns: 1fr; gap: 48px; }
+            .scale-title { font-size: 30px; }
+
+            .journey-header-wrapper { padding-top: 80px; }
+            .journey-header { padding: 0 20px; }
+            .journey-statement, .journey-statement-placeholder { font-size: 28px; }
+
+            .journey-layout { flex-direction: column; gap: 0; padding-top: 20px; }
+            .sidebar-nav { display: none; }
+
+            .journey-section { grid-template-columns: 1fr; gap: 32px; padding: 60px 0; }
+            .section-title { font-size: 24px; margin-bottom: 12px; }
+            .section-desc { font-size: 14px; }
+            .section-desc br { display: none; }
+
+            .terminal-block { padding-bottom: 100px; }
+            .terminal-line { height: 100px; }
+            .terminal-title { font-size: 48px; }
+            .terminal-slogan { font-size: 16px; margin-bottom: 48px; }
+            
+            .terminal-card-box { padding: 48px 24px; border-radius: 12px; }
+            .card-main-title { font-size: 24px; }
+            .card-secondary-title { font-size: 18px; margin-bottom: 16px; }
+            .card-sub-desc { font-size: 14px; margin-bottom: 28px; }
+
+            footer { padding: 80px 0 40px 0; }
+            .footer-container { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+            .footer-left-group { flex-direction: column; gap: 8px; }
+            .footer-divider { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Timeline 右侧悬浮导航 -->
-    <div class="timeline-nav">
-        <a href="#section-meet" class="timeline-item active"></a>
-        <a href="#section-know" class="timeline-item"></a>
-        <a href="#section-trust" class="timeline-item"></a>
-        <a href="#section-frequent" class="timeline-item"></a>
-        <a href="#section-share" class="timeline-item"></a>
-    </div>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo-area">
+                <span class="logo-text">回客</span>
+                <span class="logo-sub">Relationship OS</span>
+            </div>
+            <div>
+                <a href="#apply-box" class="btn btn-primary">申请首批体验官</a>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Hero 屏 -->
+    <!-- 首屏部分已完全按照要求恢复 -->
     <section class="hero">
-        <div class="ambient-glow ambient-glow-1"></div>
-        <div class="ambient-glow ambient-glow-2"></div>
-        <h1 class="hero-title">让每一段关系<br>都不被遗忘</h1>
-        <h2 class="hero-subtitle">从认识客户，到客户推荐客户</h2>
-        
-        <div class="hero-brand-block">
-            <div class="hero-brand-name">回客</div>
-            <div class="hero-brand-desc">帮助你经营每一段关系</div>
-        </div>
-        
-        <a href="https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcn8dZjroLNPuxDJnOg8IjeIb" target="_blank" class="btn-primary">申请首批体验官</a>
-    </section>
-
-    <!-- 独立陈述屏（仅调整静态换行与留白，无任何动效） -->
-    <section class="statement-section">
-        <div class="statement-text">
-            <span class="line-break-gap">很多时候离开的</span>
-            不是客户<br>
-            而是连接
-        </div>
-    </section>
-
-    <!-- 规模痛点屏 -->
-    <section class="scale-pain-section">
-        <h2 class="scale-pain-title">客户越来越多的时候<br>记忆逐渐失效</h2>
-        <div class="scale-pain-grid">
-            <div class="scale-pain-item">
-                <div class="scale-pain-number">10个客户</div>
-                <div class="scale-pain-desc">靠大脑记忆，充满情感与细节</div>
-            </div>
-            <div class="scale-pain-item">
-                <div class="scale-pain-number">100个客户</div>
-                <div class="scale-pain-desc">靠翻看微信备注，开始感到杂乱</div>
-            </div>
-            <div class="scale-pain-item">
-                <div class="scale-pain-number">1000个客户</div>
-                <div class="scale-pain-desc">靠传统CRM系统，只留下冰冷的数字</div>
-            </div>
-            <div class="scale-pain-item">
-                <div class="scale-pain-number">10000+ 客户</div>
-                <div class="scale-pain-desc">靠「回客」转换为持续增值的关系资产</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Journey 链路屏 -->
-    <section class="journey-section">
-        <div class="journey-content">
-            <div class="journey-text">
-                <h2>每一段关系<br>都有自己的旅程</h2>
-            </div>
-            <div class="journey-timeline">
-                <div class="journey-nodes">
-                    <div class="journey-node">
-                        <div class="node-icon">👤</div>
-                        <div class="node-text">
-                            <h3>1. 遇见</h3>
-                            <p>始于一次不经意的邂逅，留下最初的痕迹</p>
-                        </div>
+        <div class="container">
+            <div class="hero-grid">
+                <div>
+                    <h1 class="hero-title">让每一段关系，<br>都不被遗忘。</h1>
+                    <div class="hero-value">从认识客户，<br>到客户推荐客户。</div>
+                    <div class="hero-desc-group">
+                        <span class="hero-brand-highlight">回客</span>
+                        <div class="hero-desc-text">帮助你经营每一段关系。</div>
                     </div>
-                    <div class="journey-node">
-                        <div class="node-icon">👥</div>
-                        <div class="node-text">
-                            <h3>2. 认识</h3>
-                            <p>深于彼此了解，记住对方独特的偏好与习惯</p>
+                    <button class="btn-hero-capture" onclick="document.getElementById('apply-box').scrollIntoView({behavior: 'smooth'});">申请首批体验官</button>
+                </div>
+                <div>
+                    <div class="ui-viewport">
+                        <div class="action-card">
+                            <div class="action-header">
+                                <span class="action-name">王雪梅</span>
+                                <span class="action-status">72天没来了</span>
+                            </div>
+                            <div class="action-body">过去一年她曾到店 14 次，是时候发条换季关怀关心一下她了。</div>
+                            <div class="action-footer">
+                                <button class="action-btn" onclick="document.getElementById('apply-box').scrollIntoView({behavior: 'smooth'});">发微信问候</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="journey-node">
-                        <div class="node-icon">💙</div>
-                        <div class="node-text">
-                            <h3>3. 信任</h3>
-                            <p>成于长期无间断的陪伴，将过客变成挚友</p>
-                        </div>
-                    </div>
-                    <div class="journey-node">
-                        <div class="node-icon">📅</div>
-                        <div class="node-text">
-                            <h3>4. 常来</h3>
-                            <p>源于时常的挂念，恰到好处的互动让关系不断升温</p>
-                        </div>
-                    </div>
-                    <div class="journey-node" style="padding-bottom: 0;">
-                        <div class="node-icon">⭐</div>
-                        <div class="node-text">
-                            <h3>5. 推荐</h3>
-                            <p>信任的终极传递，让最懂你的客户为你带来新朋友</p>
+                        <div class="memo-note">
+                            <div class="memo-title">记忆备忘</div>
+                            对皮肤痛感极度敏感，喜安静。提过下个月要和家人带孩子去马来西亚槟城度假，咖啡习惯去冰。
                         </div>
                     </div>
                 </div>
@@ -293,416 +462,287 @@
         </div>
     </section>
 
-    <!-- 理想与现实能力的黄金桥梁过渡区 -->
-    <div class="bridge-transition">
-        <p>关系不会止于认识</p>
-        <p>而会因<span class="highlight-purple">经营</span>而成长</p>
+    <section class="statement-section">
+        <div class="container">
+            <p class="statement-text">很多时候离开的<br>不是客户<br>而是连接</p>
+        </div>
+    </section>
+
+    <section class="scale-section">
+        <div class="container scale-grid">
+            <div class="scale-card">
+                <div class="scale-num">01</div>
+                <div class="scale-title">10个客户</div>
+                <div class="scale-desc">靠记忆</div>
+            </div>
+            <div class="scale-card">
+                <div class="scale-num">02</div>
+                <div class="scale-title">100个客户</div>
+                <div class="scale-desc">靠微信</div>
+            </div>
+            <div class="scale-card">
+                <div class="scale-num">03</div>
+                <div class="scale-title">1000个客户</div>
+                <div class="scale-desc">靠系统</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 打字机部分独立布局，避开侧边栏实现全局绝对居中 -->
+    <div class="journey-header-wrapper">
+        <div class="journey-header">
+            <div class="journey-statement-wrapper">
+                <h2 class="journey-statement">每一段关系都有自己的旅程</h2>
+                <div class="journey-statement-placeholder">每一段关系都有自己的旅程</div>
+            </div>
+        </div>
     </div>
 
-    <!-- 1. 遇见 -->
-    <section class="section" id="section-meet">
-        <div class="container">
-            <div class="two-column">
-                <div class="two-column-left">
-                    <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; letter-spacing: 2px;">STAGE 01</div>
-                    <h2>初次遇见</h2>
-                    <p class="chapter-subtitle">当新连接建立，全渠道全场景无缝接入。不再让流水线式的添加，冲淡了初次见面的仪式感。</p>
+    <div class="container journey-layout">
+        <div class="sidebar-nav">
+            <div class="timeline-indicator">
+                <div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-label">连接</span></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-label">了解</span></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-label">陪伴</span></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-label">常来往</span></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><span class="timeline-label">增长</span></div>
+            </div>
+        </div>
+
+        <div class="journey-flow">
+            <section id="section-0" class="journey-section">
+                <div>
+                    <div class="section-meta">Chapter 01 : 连接</div>
+                    <h3 class="section-title">关系始于连接</h3>
+                    <p class="section-desc">每一次建立连接，<br>都是关系的开始。</p>
                 </div>
-                <div class="two-column-right">
-                    <div class="product-screenshot">
-                        <div class="journey-label">遇见</div>
-                        <div class="app-sidebar">
-                            <div class="sidebar-icon active">📊</div>
-                            <div class="sidebar-icon">👥</div>
-                            <div class="sidebar-icon">💬</div>
-                            <div class="sidebar-icon">⚙️</div>
-                        </div>
-                        <div class="app-main">
-                            <div class="app-topbar">
-                                <input class="topbar-search" placeholder="搜索连接源...">
+                <div>
+                    <div class="app-box">
+                        <div class="app-row" style="font-weight: 600; border-bottom: 2px solid var(--border); padding-bottom: 16px;"><span>新连接</span></div>
+                        <div class="app-row"><span>王晓丽</span><span class="app-tag" style="background:#EEF2F6; color:#4B5563;">📕 小红书</span></div>
+                        <div class="app-row"><span>赵女士</span><span class="app-tag" style="background:#EBF5FF; color:#1E40AF;">👥 转介绍</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-1" class="journey-section">
+                <div>
+                    <div class="section-meta">Chapter 02 : 了解</div>
+                    <h3 class="section-title">关系成长于了解</h3>
+                    <p class="section-desc">记住她是谁，比记住她消费了什么更重要。</p>
+                </div>
+                <div>
+                    <div class="app-box">
+                        <div class="app-row" style="font-weight: 600; border-bottom: 2px solid var(--border); padding-bottom: 16px;"><span>了解度档案</span></div>
+                        <div class="app-row"><span style="color: var(--text-muted);">核心关注</span><span style="font-weight:500;">长线抗衰 ｜ 皮肤亮泽</span></div>
+                        <div class="app-row"><span style="color: var(--text-muted);">重要特质</span><span style="font-weight:500;">皮肤敏感 ｜ 喜欢极度安静</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-2" class="journey-section">
+                <div>
+                    <div class="section-meta">Chapter 03 : 陪伴</div>
+                    <h3 class="section-title">关系建立于陪伴</h3>
+                    <p class="section-desc">重要的不是回访。而是记得。</p>
+                </div>
+                <div>
+                    <div class="app-box">
+                        <div class="app-row" style="font-weight: 600; border-bottom: 2px solid var(--border); padding-bottom: 16px;"><span>时间线</span></div>
+                        <div style="padding-top:16px; position:relative; padding-left:16px;">
+                            <div style="position:absolute; left:4px; top:20px; bottom:20px; width:1px; background:var(--border);"></div>
+                            <div style="margin-bottom:20px; position:relative;">
+                                <div style="position:absolute; left:-15px; top:5px; width:7px; height:7px; border-radius:50%; background:#111827;"></div>
+                                <div style="font-size:13px; font-weight:500;">初次遇见 · 建立初始档案</div>
                             </div>
-                            <div class="app-navbar">
-                                <span class="app-nav-item active">新客流入</span>
-                                <span class="app-nav-item">未分类</span>
-                            </div>
-                            <div class="app-content">
-                                <div class="app-title">本周新邂逅</div>
-                                <div class="app-stat-box">
-                                    <div class="app-stat-value">28</div>
-                                    <div class="app-stat-label">待沉淀的新关系</div>
-                                </div>
-                                <div class="app-list">
-                                    <div class="app-list-item">
-                                        <div class="app-avatar">苏</div>
-                                        <div class="app-list-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                                <span class="app-list-name">苏先生</span>
-                                                <span class="app-tag" style="margin-top:0; background:rgba(255,110,199,0.1); color:var(--secondary);">小红书</span>
-                                            </div>
-                                            <div class="app-list-meta" style="margin-top:2px;">咨询方案详情 · 2小时前</div>
-                                        </div>
-                                    </div>
-                                    <div class="app-list-item">
-                                        <div class="app-avatar">林</div>
-                                        <div class="app-list-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                                <span class="app-list-name">林小姐</span>
-                                                <span class="app-tag" style="margin-top:0;">门店扫码</span>
-                                            </div>
-                                            <div class="app-list-meta" style="margin-top:2px;">已关注 brand 首页 · 昨天</div>
-                                        </div>
-                                    </div>
-                                    <div class="app-list-item">
-                                        <div class="app-avatar">张</div>
-                                        <div class="app-list-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                                <span class="app-list-name">张大千</span>
-                                                <span class="app-tag" style="margin-top:0; background:rgba(16,185,129,0.1); color:#10B981;">朋友推荐</span>
-                                            </div>
-                                            <div class="app-list-meta" style="margin-top:2px;">由老客顾医生推名片添加 · 2天前</div>
-                                        </div>
-                                    </div>
-                                    <div class="app-list-item">
-                                        <div class="app-avatar">M</div>
-                                        <div class="app-list-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                                <span class="app-list-name">Molly</span>
-                                                <span class="app-tag" style="margin-top:0; background:rgba(245,158,11,0.1); color:#F59E0B;">抖音</span>
-                                            </div>
-                                            <div class="app-list-meta" style="margin-top:2px;">留资预约体验课 · 3天前</div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div style="position:relative;">
+                                <div style="position:absolute; left:-15px; top:5px; width:7px; height:7px; border-radius:50%; background:var(--primary);"></div>
+                                <div style="font-size:13px; font-weight:600; color:var(--primary);">触发换季管理提示</div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- 2. 深度了解 -->
-    <section class="section" id="section-know">
-        <div class="container">
-            <div class="two-column reverse">
-                <div class="two-column-left">
-                    <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; letter-spacing: 2px;">STAGE 02</div>
-                    <h2>深度了解</h2>
-                    <p class="chapter-subtitle">摆脱冷冰冰的信息表。动态捕获和归档每一位客户的生日、职业、独特偏好，建立立体细腻的专属档案。</p>
+            <section id="section-3" class="journey-section">
+                <div>
+                    <div class="section-meta">Chapter 04 : 常来往</div>
+                    <h3 class="section-title">关系沉淀于常来常往</h3>
+                    <p class="section-desc">该联系的时候联系。不该打扰的时候安静。</p>
                 </div>
-                <div class="two-column-right">
-                    <div class="product-screenshot">
-                        <div class="journey-label">了解</div>
-                        <div class="app-sidebar">
-                            <div class="sidebar-icon">📊</div>
-                            <div class="sidebar-icon active">👥</div>
-                            <div class="sidebar-icon">💬</div>
-                            <div class="sidebar-icon">⚙️</div>
+                <div>
+                    <div class="app-box">
+                        <div class="app-row" style="font-weight: 600; border-bottom: 2px solid var(--border); padding-bottom: 16px;"><span>今日待维系</span></div>
+                        <div style="padding:16px 0 12px 0;">
+                            <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:600;"><span>林婉儿</span><span style="color:var(--primary); font-size:11px;">生日还有 3 天</span></div>
                         </div>
-                        <div class="app-main">
-                            <div class="app-topbar">
-                                <input class="topbar-search" placeholder="搜索林婉儿...">
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-4" class="journey-section" style="border-bottom: none;">
+                <div>
+                    <div class="section-meta">Chapter 05 : 增长</div>
+                    <h3 class="section-title">关系开始增长</h3>
+                    <p class="section-desc">最好的新客户，来自老客户的信任传递。</p>
+                </div>
+                <div>
+                    <div class="app-box" style="background: #FAFAFB; border: 1px solid var(--border); min-height: 290px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div style="display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid #EAECEF; padding-bottom: 12px; margin-bottom: 8px;">
+                            <span style="font-size: 12px; font-weight: 600; color: var(--text-main); font-family: 'Inter', sans-serif;">关系资产网络</span>
+                            <div style="font-size: 11px; color: var(--text-muted); font-family: 'Inter', sans-serif; display: flex; flex-wrap: wrap; gap: 8px; font-weight: 500;">
+                                <span>推荐客户 <span style="color: var(--text-main); font-weight: 600;">6</span></span>
+                                <span style="color: #E5E7EB;">|</span>
+                                <span>成交客户 <span style="color: var(--text-main); font-weight: 600;">5</span></span>
+                                <span style="color: #E5E7EB;">|</span>
+                                <span>推荐业绩 <span style="color: var(--primary); font-weight: 600;">¥18,600</span></span>
                             </div>
-                            <div class="app-content">
-                                <div style="border-bottom: 1px solid var(--border); padding-bottom: 14px;">
-                                    <div class="app-title" style="font-size: 18px;">林婉儿</div>
-                                    <div class="app-tags-wrapper">
-                                        <span class="app-tag-badge accent">生日会员 (03.15)</span>
-                                        <span class="app-tag-badge">设计师</span>
-                                        <span class="app-tag-badge">咖啡爱好者</span>
-                                        <span class="app-tag-badge">养猫</span>
+                        </div>
+                        
+                        <div class="network-svg-container">
+                            <div style="position: absolute; inset: 0; background-size: 16px 16px; background-image: linear-gradient(to right, rgba(0,0,0,0.01) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.01) 1px, transparent 1px); pointer-events: none;"></div>
+                            
+                            <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;" viewBox="0 0 350 210" preserveAspectRatio="xMidYMid slice">
+                                <defs>
+                                    <linearGradient id="radial-link" x1="0" y1="0" x2="1" y2="1">
+                                        <stop offset="0%" stop-color="#6D4AFF" stop-opacity="0.5"/>
+                                        <stop offset="100%" stop-color="#6D4AFF" stop-opacity="0.1"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 175 105 C 130 105, 90 65, 60 45" fill="none" stroke="url(#radial-link)" stroke-width="1.5" />
+                                <path d="M 175 105 C 175 80, 175 60, 175 38" fill="none" stroke="url(#radial-link)" stroke-width="1.5" />
+                                <path d="M 175 105 C 175 130, 175 150, 175 172" fill="none" stroke="url(#radial-link)" stroke-width="1.5" />
+                                <path d="M 175 105 C 220 105, 260 65, 290 45" fill="none" stroke="url(#radial-link)" stroke-width="1.5" />
+                            </svg>
+
+                            <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 10;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(109, 74, 255, 0.03); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(109, 74, 255, 0.1); border: 1px solid rgba(109, 74, 255, 0.15);">
+                                    <div style="width: 46px; height: 46px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(109, 74, 255, 0.25);">
+                                        <span style="color: #FFFFFF; font-size: 15px; font-weight: 700; font-family: 'Noto Serif SC', serif;">王</span>
                                     </div>
                                 </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
-                                    <div style="background: var(--bg-light); padding: 10px; border-radius: 8px;">
-                                        <div class="app-list-meta">核心偏好</div>
-                                        <div class="app-list-name" style="margin-top: 4px;">只喝燕麦拿铁</div>
-                                    </div>
-                                    <div style="background: var(--bg-light); padding: 10px; border-radius: 8px;">
-                                        <div class="app-list-meta">生活细节</div>
-                                        <div class="app-list-name" style="margin-top: 4px;">对猫毛轻微过敏</div>
-                                    </div>
-                                </div>
-                                <div style="background: var(--bg-light); padding: 12px; border-radius: 8px; margin-top: 4px;">
-                                    <div class="app-list-meta">接待备忘</div>
-                                    <div class="app-list-name" style="margin-top: 4px; font-weight: 400; line-height: 1.5;">喜欢偏安静的靠窗座位。交谈时不用刻意推销，注重内容本身的专业度和空间边界感。</div>
-                                </div>
+                                <span style="font-size: 11px; font-weight: 600; color: var(--text-main); margin-top: 4px; background: #FFFFFF; padding: 1px 8px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.04); white-space: nowrap;">王雪梅</span>
+                            </div>
+
+                            <div style="position: absolute; left: 15px; top: 20px; display: flex; align-items: center; background: #FFFFFF; border: 1px solid rgba(109, 74, 255, 0.4); padding: 4px 10px 4px 6px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); z-index: 5;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(109, 74, 255, 0.05); display: flex; align-items: center; justify-content: center; margin-right: 4px;"><span style="font-size: 9px; font-weight: 600; color: var(--primary);">李</span></div>
+                                <span style="font-size: 10px; font-weight: 500; color: var(--text-main);">李女士</span>
+                            </div>
+                            <div style="position: absolute; left: 40%; top: 12px; transform: translateX(-50%); display: flex; align-items: center; background: #FFFFFF; border: 1px solid rgba(109, 74, 255, 0.4); padding: 4px 10px 4px 6px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); z-index: 5;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(109, 74, 255, 0.05); display: flex; align-items: center; justify-content: center; margin-right: 4px;"><span style="font-size: 9px; font-weight: 600; color: var(--primary);">陈</span></div>
+                                <span style="font-size: 10px; font-weight: 500; color: var(--text-main);">陈雪曼</span>
+                            </div>
+                            <div style="position: absolute; left: 40%; top: 172px; transform: translateX(-50%); display: flex; align-items: center; background: #FFFFFF; border: 1px solid rgba(109, 74, 255, 0.4); padding: 4px 10px 4px 6px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); z-index: 5;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(109, 74, 255, 0.05); display: flex; align-items: center; justify-content: center; margin-right: 4px;"><span style="font-size: 9px; font-weight: 600; color: var(--primary);">周</span></div>
+                                <span style="font-size: 10px; font-weight: 500; color: var(--text-main);">周小美</span>
+                            </div>
+                            <div style="position: absolute; right: 15px; top: 20px; display: flex; align-items: center; background: #FFFFFF; border: 1px solid rgba(109, 74, 255, 0.4); padding: 4px 10px 4px 6px; border-radius: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); z-index: 5;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: rgba(109, 74, 255, 0.05); display: flex; align-items: center; justify-content: center; margin-right: 4px;"><span style="font-size: 9px; font-weight: 600; color: var(--primary);">孙</span></div>
+                                <span style="font-size: 10px; font-weight: 500; color: var(--text-main);">孙佳怡</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
-    </section>
+    </div>
 
-    <!-- 3. 信任 -->
-    <section class="section" id="section-trust">
-        <div class="container">
-            <div class="two-column">
-                <div class="two-column-left">
-                    <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; letter-spacing: 2px;">STAGE 03</div>
-                    <h2>建立信任</h2>
-                    <p class="chapter-subtitle">信任是由每一次完美的交付积攒而成的。完整沉淀客户的服务历史与契约节点，让团队任何人在对接时都能如数家珍。</p>
-                </div>
-                <div class="two-column-right">
-                    <div class="product-screenshot">
-                        <div class="journey-label">信任</div>
-                        <div class="app-sidebar">
-                            <div class="sidebar-icon">📊</div>
-                            <div class="sidebar-icon">👥</div>
-                            <div class="sidebar-icon active">💼</div>
-                            <div class="sidebar-icon">⚙️</div>
-                        </div>
-                        <div class="app-main">
-                            <div class="app-topbar">
-                                <div class="app-title" style="margin: 0;">服务历史与契约</div>
-                            </div>
-                            <div class="app-content">
-                                <div class="app-stat-box" style="background: rgba(109, 74, 255, 0.02); border-color: rgba(109, 74, 255, 0.08); text-align: left; padding: 12px 16px;">
-                                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                                        <span style="font-size:14px; font-weight:700;">交付总览</span>
-                                        <span style="color:#10B981; font-weight:600;">已成交 4 次 · 高复购</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="app-title" style="font-size: 12px; color: var(--text-muted); margin-top: 6px;">服务记录时间线</div>
-                                <div class="app-timeline-mini">
-                                    <div class="app-timeline-node highlight">
-                                        <span style="color:var(--text-muted);">2026.05.10</span> · <strong>第三次复购成交</strong>
-                                        <p style="color:var(--text-muted); margin-top:2px;">定制化空间改造方案正式签约交付，履约完美。</p>
-                                    </div>
-                                    <div class="app-timeline-node">
-                                        <span style="color:var(--text-muted);">2026.04.12</span> · <strong>追加单笔升级服务</strong>
-                                        <p style="color:var(--text-muted); margin-top:2px;">升级软装增值服务包，无任何客诉。</p>
-                                    </div>
-                                    <div class="app-timeline-node">
-                                        <span style="color:var(--text-muted);">2026.03.15</span> · <strong>首单成交 & 客户评价</strong>
-                                        <p style="color:#10B981; font-weight:500; margin-top:2px;">“体验极佳，细节把控得很到位，非常靠谱的团队！”</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4. 常来 -->
-    <section class="section" id="section-frequent">
-        <div class="container">
-            <div class="two-column reverse">
-                <div class="two-column-left">
-                    <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; letter-spacing: 2px;">STAGE 04</div>
-                    <h2>促成常来</h2>
-                    <p class="chapter-subtitle">不打扰，是最高级的关怀。智能计算最佳互动周期，在客户快要淡忘你时，通过一份极具个性化的暖心问候唤醒记忆。</p>
-                </div>
-                <div class="two-column-right">
-                    <div class="product-screenshot">
-                        <div class="journey-label">常来</div>
-                        <div class="app-sidebar">
-                            <div class="sidebar-icon">📊</div>
-                            <div class="sidebar-icon">👥</div>
-                            <div class="sidebar-icon">💬</div>
-                            <div class="sidebar-icon active">🔔</div>
-                        </div>
-                        <div class="app-main">
-                            <div class="app-topbar">
-                                <div class="app-title" style="margin: 0;">智能关怀与未来提醒</div>
-                            </div>
-                            <div class="app-content">
-                                <div class="app-list">
-                                    <div class="app-title" style="font-size: 12px; color: var(--text-muted);">智能推荐互动</div>
-                                    
-                                    <div class="app-list-item" style="border-left: 3px solid var(--secondary); align-items: flex-start; flex-direction: column; gap: 6px;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                            <span class="app-list-name">顾医生</span>
-                                            <span style="font-size:10px; color:var(--secondary); background:rgba(255,110,199,0.1); padding:2px 6px; border-radius:4px; font-weight:600;">流失风险：高</span>
-                                        </div>
-                                        <div class="app-list-meta">已连续45天未到店互动</div>
-                                        <div style="background:var(--bg-light); width:100%; padding:8px; border-radius:6px; font-size:11px; margin-top:2px;">
-                                            <strong>建议互动时间：</strong>今天下午 15:00 - 17:00<br>
-                                            <strong>话术锚点：</strong>推荐其挚爱的单品春季限定款上市
-                                        </div>
-                                    </div>
-
-                                    <div class="app-list-item" style="border-left: 3px solid var(--primary); align-items: flex-start; flex-direction: column; gap: 6px;">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                                            <span class="app-list-name">陈教练</span>
-                                            <span style="font-size:10px; color:var(--primary); background:rgba(109,74,255,0.1); padding:2px 6px; border-radius:4px; font-weight:600;">未来提醒</span>
-                                        </div>
-                                        <div class="app-list-meta">后天（06.16）为会员两周年纪念</div>
-                                        <div style="background:var(--bg-light); width:100%; padding:8px; border-radius:6px; font-size:11px; margin-top:2px;">
-                                            <strong>建议互动时间：</strong>明天上午 10:00<br>
-                                            <strong>话术锚点：</strong>私信发送专属定制两周年谢礼与贺卡
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 5. 推荐 -->
-    <section class="section" id="section-share">
-        <div class="container">
-            <div class="two-column">
-                <div class="two-column-left">
-                    <div style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; letter-spacing: 2px;">STAGE 05</div>
-                    <h2>裂变推荐</h2>
-                    <p class="chapter-subtitle">最好的营销，是客户的口碑。追踪并激励老客带新客的荣誉生态，让每一份发自内心的推荐都能被精确记录与答谢。</p>
-                </div>
-                <div class="two-column-right">
-                    <div class="product-screenshot">
-                        <div class="journey-label">推荐</div>
-                        <div class="app-sidebar">
-                            <div class="sidebar-icon active">⭐</div>
-                            <div class="sidebar-icon">👥</div>
-                            <div class="sidebar-icon">💬</div>
-                            <div class="sidebar-icon">⚙️</div>
-                        </div>
-                        <div class="app-main">
-                            <div class="app-topbar">
-                                <div class="app-title" style="margin: 0;">关系网络</div>
-                            </div>
-                            <div class="app-content" style="gap: 10px;">
-                                <div class="net-grid-top">
-                                    <div class="net-stat-card">
-                                        <div class="num">28</div>
-                                        <div class="label">推荐客户</div>
-                                    </div>
-                                    <div class="net-stat-card">
-                                        <div class="num">16</div>
-                                        <div class="label">成交客户</div>
-                                    </div>
-                                    <div class="net-stat-card">
-                                        <div class="num primary-color">¥86K</div>
-                                        <div class="label">推荐贡献</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="app-list-meta" style="font-size: 11px; margin-bottom: -4px;">客户带来的客户</div>
-                                
-                                <div class="network-visual-box">
-                                    <div class="net-row">
-                                        <div class="net-node-card root">
-                                            <div class="net-node-title">王女士</div>
-                                            <div class="net-node-val p-color">贡献 ¥26,800</div>
-                                        </div>
-                                    </div>
-                                    <div class="net-connector-line"></div>
-                                    
-                                    <div class="net-split-row">
-                                        <div class="net-split-column">
-                                            <div class="net-node-card">
-                                                <div class="net-node-title">李女士</div>
-                                                <div class="net-node-val s-color">¥3,600</div>
-                                            </div>
-                                            <div class="net-connector-line" style="height:10px;"></div>
-                                            <div class="net-node-card" style="opacity: 0.85; scale: 0.95;">
-                                                <div class="net-node-title">└ 周先生</div>
-                                                <div class="net-node-val s-color">¥4,200</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="net-split-column">
-                                            <div class="net-node-card">
-                                                <div class="net-node-title">陈女士</div>
-                                                <div class="net-node-val s-color">¥5,800</div>
-                                            </div>
-                                            <div class="net-connector-line" style="height:10px;"></div>
-                                            <div class="net-node-card" style="opacity: 0.85; scale: 0.95;">
-                                                <div class="net-node-title">└ 刘女士</div>
-                                                <div class="net-node-val s-color">¥6,500</div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="net-split-column">
-                                            <div class="net-node-card">
-                                                <div class="net-node-title">赵女士</div>
-                                                <div class="net-node-val s-color">¥8,200</div>
-                                            </div>
-                                            <div class="net-connector-line" style="height:10px;"></div>
-                                            <div class="net-node-card" style="opacity: 0.85; scale: 0.95;">
-                                                <div class="net-node-title">└ 孙女士</div>
-                                                <div class="net-node-val s-color">¥3,100</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 品牌收束区 -->
-    <section style="padding: 140px 40px; text-align: center; background: #FFFFFF;">
-        <div style="max-width: 800px; margin: 0 auto;">
-            <div style="font-family: 'Noto Serif SC', serif; font-size: 64px; font-weight: 700; color: #111827; margin-bottom: 24px; letter-spacing: -0.02em;">回客</div>
-            <div style="font-family: 'Noto Serif SC', serif; font-size: 24px; font-weight: 400; color: #374151; letter-spacing: -0.01em;">让每一段关系都不被遗忘</div>
-        </div>
-    </section>
-
-    <!-- CTA 体验官区 -->
-    <section class="section" style="background: var(--bg-light);">
-        <div class="beta-section">
-            <h2>如果客户关系是资产<br>那它不该只存在微信里</h2>
-            <p class="beta-desc">我们正在邀请首批共创伙伴，一起建立关系资产系统</p>
-
-            <div style="margin-top: 48px;">
-                <a href="https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcn8dZjroLNPuxDJnOg8IjeIb"
-                   target="_blank"
-                   class="btn-primary"
-                   style="
-                       min-width: 220px;
-                       height: 56px;
-                       display: inline-flex;
-                       align-items: center;
-                       justify-content: center;
-                       text-decoration: none;
-                       border-radius: 16px;
-                   ">
-                   立即申请
+    <section class="terminal-block">
+        <div class="terminal-line"></div>
+        <div class="terminal-dot-center"></div>
+        
+        <h2 class="terminal-title">回客</h2>
+        <p class="terminal-slogan">让每一段关系都不被遗忘</p>
+        
+        <div id="apply-box" class="terminal-card-box">
+            <h3 class="card-main-title">如果客户关系是资产</h3>
+            <div class="card-secondary-title">那它不该只存在微信里</div>
+            <p class="card-sub-desc">
+                我们正在邀请首批体验官<br>
+                一起验证关系经营的新方式
+            </p>
+            <button class="card-btn" onclick="window.location.href='https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcn8dZjroLNPuxDJnOg8IjeIb'">立即申请</button>
+            <div style="margin-top: 36px; padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.12);">
+                <p style="font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.9; margin-bottom: 10px;">
+                    如果你深耕美业，<br>并相信信任比流量更重要。
+                </p>
+                <a href="/partner" style="font-size: 14px; color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 500; transition: opacity .15s;" onmouseover="this.style.opacity='.5'" onmouseout="this.style.opacity='1'">
+                    了解创始伙伴计划 →
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-left">回客 ｜ 让每一段关系都不被遗忘</div>
-            <div class="footer-right">© 上海神工天降智能科技有限公司</div>
+        <div class="container footer-container">
+            <div class="footer-left-group">
+                <span class="footer-brand">回客</span>
+                <div class="footer-divider"></div>
+                <div class="footer-slogan-single">让每一段关系 都不被遗忘</div>
+            </div>
+            <div class="footer-right-copyright">
+                © 上海神工天降智能科技有限公司
+            </div>
         </div>
     </footer>
 
-    <!-- 点状导航联动与动态激活控制脚本 -->
     <script>
-        const navItems = document.querySelectorAll('.timeline-nav .timeline-item');
-        const sections = Array.from(document.querySelectorAll('section[id]'));
-
-        window.addEventListener('scroll', () => {
-            let currentId = '';
-            const scrollPos = window.scrollY + window.innerHeight / 3;
-
-            sections.forEach(section => {
-                if (scrollPos >= section.offsetTop) {
-                    currentId = section.getAttribute('id');
+        // Typewriter Effect
+        const typewriterElement = document.querySelector('.journey-statement');
+        const textToType = "每一段关系都有自己的旅程";
+        
+        if (typewriterElement) {
+            typewriterElement.textContent = ""; 
+            let charIndex = 0;
+            function typeCharacter() {
+                if (charIndex < textToType.length) {
+                    typewriterElement.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeCharacter, 140);
+                } else {
+                    typewriterElement.classList.add('typing-done');
                 }
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        typeCharacter();
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.6 });
+
+            observer.observe(typewriterElement);
+        }
+
+        // Sidebar Navigation Highlight
+        const sections = document.querySelectorAll('[id^="section-"]');
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        const updateTimeline = () => {
+            if (window.innerWidth <= 768) return;
+
+            let currentIndex = 0;
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight / 2) currentIndex = index;
             });
 
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('href') === `#${currentId}`) {
-                    item.classList.add('active');
-                }
+            timelineItems.forEach((item, index) => {
+                item.classList.remove('active', 'passed');
+                if (index < currentIndex) item.classList.add('passed');
+                else if (index === currentIndex) item.classList.add('active');
+            });
+        };
+
+        window.addEventListener('scroll', updateTimeline);
+        window.addEventListener('resize', updateTimeline);
+        updateTimeline();
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
             });
         });
     </script>
