@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>回客创始伙伴计划</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #F7F4EF;
+      color: #2D2D2D;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    :root {
+      --dk: #1A2E2A;
+      --mid: #2D4A44;
+      --lt: #4A7A72;
+      --gold: #C4963B;
+      --muted: #9BB5AE;
+      --border: rgba(0,0,0,0.08);
+      --bg: #FFFFFF;
+      --bg2: #F7F4EF;
+      --text: #2D2D2D;
+      --text2: #666;
+      --text3: #999;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    /* S1 Hero */
+    .s1 {
+      background: var(--dk);
+      padding: 80px 52px 72px;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      border-style: solid;
+      border-color: #2D4A44;
+    }
+    .orb1 { top: -90px; right: -90px; width: 340px; height: 340px; border-width: 60px; opacity: .45; }
+    .orb2 { bottom: -100px; left: 18%; width: 200px; height: 200px; border-width: 36px; opacity: .22; }
+    .s1-h1 {
+      font-size: 48px;
+      font-weight: 500;
+      color: #F7F4EF;
+      line-height: 1.15;
+      margin-bottom: 22px;
+      position: relative;
+      z-index: 1;
+    }
+    .s1-plan {
+      font-size: 13px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .s1-who {
+      margin-bottom: 36px;
+      position: relative;
+      z-index: 1;
+    }
+    .s1-who-line {
+      font-size: 15px;
+      color: #4A7A72;
+      line-height: 1.9;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #C4963B;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s;
+      position: relative;
+      z-index: 1;
+      font-family: inherit;
+    }
+    .btn-primary:hover { opacity: .87; }
+    .btn-primary-lg { font-size: 15px; padding: 14px 36px; }
+
+    /* Sections */
+    .sec {
+      background: var(--bg);
+      padding: 56px 52px;
+      border-radius: var(--radius-lg);
+    }
+
+    .s2-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 20px; line-height: 1.3; }
+    .s2-group { margin-bottom: 24px; }
+    .s2-item { font-size: 20px; font-weight: 500; color: var(--text2); line-height: 1.7; }
+    .s2-item.lit { color: var(--text); }
+    .s2-close { font-size: 17px; line-height: 1.7; color: var(--text2); }
+    .s2-close span { color: var(--gold); font-weight: 500; }
+
+    /* S3 */
+    .s3-wrap {
+      background: var(--dk);
+      border-radius: var(--radius-lg);
+      padding: 40px 48px;
+    }
+    .s3-head { font-size: 24px; font-weight: 500; color: #F7F4EF; line-height: 1.35; margin-bottom: 28px; }
+    .s3-items { margin-bottom: 24px; }
+    .s3-item {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.6;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .s3-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 1.5px solid #C4963B;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+    .s3-divider { border: none; border-top: .5px solid #2D4A44; margin: 24px 0; }
+    .s3-mid { font-size: 16px; color: #9BB5AE; line-height: 1.8; margin-bottom: 20px; }
+    .s3-close { font-size: 17px; color: #F7F4EF; font-weight: 500; line-height: 1.6; }
+    .s3-close span { color: var(--gold); }
+
+    /* S4 */
+    .s4-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 28px; line-height: 1.3; }
+    .s4-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .s4-row {
+      background: var(--bg);
+      padding: 20px 24px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .s4-icon { font-size: 20px; color: var(--lt); flex-shrink: 0; margin-top: 1px; }
+    .s4-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .s4-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+    /* S5 */
+    .s5-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 28px; }
+    .s5-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .s5-item { background: var(--bg); padding: 24px 28px; }
+    .s5-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-bottom: 12px; }
+    .s5-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+    .s5-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+    /* S6 */
+    .s6-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 36px; }
+    .s6-steps {
+      display: flex;
+      gap: 0;
+      position: relative;
+      margin-bottom: 48px;
+    }
+    .s6-steps::before {
+      content: '';
+      position: absolute;
+      top: 22px; left: 22px; right: 22px;
+      height: .5px;
+      background: var(--border);
+      z-index: 0;
+    }
+    .s6-step { flex: 1; text-align: center; position: relative; z-index: 1; }
+    .s6-dot-wrap {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: .5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 17px;
+      color: var(--mid);
+    }
+    .s6-label { font-size: 13px; font-weight: 500; color: var(--text); }
+    .s6-closing {
+      border-top: .5px solid var(--border);
+      padding-top: 32px;
+      text-align: center;
+    }
+    .s6-closing-text {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--gold);
+      letter-spacing: .02em;
+    }
+
+    /* S7 */
+    .s7 {
+      background: var(--dk);
+      border-radius: var(--radius-lg);
+      padding: 80px 52px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .s7-orb1 { top: -70px; left: -70px; width: 240px; height: 240px; border-width: 44px; opacity: .38; }
+    .s7-orb2 { bottom: -80px; right: -50px; width: 180px; height: 180px; border-width: 32px; opacity: .22; }
+    .s7-pre { font-size: 17px; color: var(--muted); line-height: 2; margin-bottom: 16px; position: relative; z-index: 1; }
+    .s7-invite { font-size: 22px; font-weight: 500; color: #F7F4EF; line-height: 1.5; margin-bottom: 40px; position: relative; z-index: 1; }
+    .s7-invite span { color: var(--gold); }
+    .s7-btn-wrap { position: relative; z-index: 1; margin-bottom: 14px; }
+    .s7-sub { font-size: 12px; color: #4A7A72; position: relative; z-index: 1; letter-spacing: .03em; }
+    .s7-brand { margin-top: 52px; position: relative; z-index: 1; }
+    .s7-brand-name { font-size: 20px; font-weight: 500; color: var(--gold); margin-bottom: 6px; }
+    .s7-brand-slogan { font-size: 12px; color: #4A7A72; letter-spacing: .05em; }
+
+    /* 手机响应式 */
+    @media (max-width: 600px) {
+      .wrapper { padding: 12px 12px 48px; gap: 2px; }
+      .s1 { padding: 52px 28px 48px; min-height: 340px; }
+      .s1-h1 { font-size: 36px; }
+      .sec { padding: 40px 28px; }
+      .s3-wrap { padding: 32px 28px; }
+      .s5-grid { grid-template-columns: 1fr; }
+      .s6-steps { flex-direction: column; gap: 20px; align-items: flex-start; padding-left: 20px; }
+      .s6-steps::before { display: none; }
+      .s6-step { display: flex; align-items: center; gap: 16px; text-align: left; }
+      .s6-dot-wrap { margin: 0; flex-shrink: 0; }
+      .s6-closing-text { font-size: 17px; }
+      .s7 { padding: 56px 28px; }
+      .s7-invite { font-size: 18px; }
+      .btn-primary-lg { font-size: 14px !important; padding: 13px 28px !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- S1 Hero -->
+    <div class="s1">
+      <div class="orb orb1"></div>
+      <div class="orb orb2"></div>
+      <div class="s1-h1">你，<br>值得长期回报。</div>
+      <div class="s1-plan">回客创始伙伴计划</div>
+      <div class="s1-who">
+        <div class="s1-who-line">面向美业顾问、培训老师、</div>
+        <div class="s1-who-line">服务商与门店经营者开放。</div>
+      </div>
+      <a href="#apply" class="btn-primary">
+        <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        申请成为创始伙伴
+      </a>
+    </div>
+
+    <!-- S2 -->
+    <div class="sec">
+      <div class="s2-head">如果你深耕美业，<br>并拥有：</div>
+      <div class="s2-group">
+        <div class="s2-item lit">经验。</div>
+        <div class="s2-item">口碑。</div>
+        <div class="s2-item">影响力。</div>
+        <div class="s2-item">信任。</div>
+      </div>
+      <div class="s2-close">
+        这些用时间换来的价值，<br>
+        <span>值得获得长期回报。</span>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="sec">
+      <div class="s3-wrap">
+        <div class="s3-head">很多价值，<br>没有被留下。</div>
+        <div class="s3-items">
+          <div class="s3-item"><div class="s3-dot"></div>每一次建议。</div>
+          <div class="s3-item"><div class="s3-dot"></div>每一次推荐。</div>
+          <div class="s3-item"><div class="s3-dot"></div>每一次分享。</div>
+          <div class="s3-item"><div class="s3-dot"></div>每一次连接。</div>
+        </div>
+        <div class="s3-divider"></div>
+        <div class="s3-mid">都创造了价值。<br>回报却停在了那一刻。</div>
+        <div class="s3-close">
+          回客希望改变这件事。<br>
+          <span>让每一份价值，都获得应有的长期回报。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4 -->
+    <div class="sec">
+      <div class="s4-head">成为创始伙伴，<br>你将获得：</div>
+      <div class="s4-list">
+        <div class="s4-row">
+          <div class="s4-icon"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+          <div>
+            <div class="s4-title">成为第一批共建者</div>
+            <div class="s4-desc">参与回客生态建设，与产品共同成长。</div>
+          </div>
+        </div>
+        <div class="s4-row">
+          <div class="s4-icon"><i class="ti ti-layout-kanban" aria-hidden="true"></i></div>
+          <div>
+            <div class="s4-title">参与产品未来</div>
+            <div class="s4-desc">你的行业经验，将直接影响产品方向。</div>
+          </div>
+        </div>
+        <div class="s4-row">
+          <div class="s4-icon"><i class="ti ti-users-group" aria-hidden="true"></i></div>
+          <div>
+            <div class="s4-title">获得总部支持</div>
+            <div class="s4-desc">培训、案例、资料与伙伴资源支持。</div>
+          </div>
+        </div>
+        <div class="s4-row">
+          <div class="s4-icon"><i class="ti ti-flask" aria-hidden="true"></i></div>
+          <div>
+            <div class="s4-title">优先体验新能力</div>
+            <div class="s4-desc">优先使用新功能、新工具与新计划。</div>
+          </div>
+        </div>
+        <div class="s4-row">
+          <div class="s4-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+          <div>
+            <div class="s4-title">沉淀长期价值</div>
+            <div class="s4-desc">让经验、口碑与影响力持续积累。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5 -->
+    <div class="sec">
+      <div class="s5-head">我们正在寻找：</div>
+      <div class="s5-grid">
+        <div class="s5-item">
+          <div class="s5-dot"></div>
+          <div class="s5-title">长期主义者</div>
+          <div class="s5-desc">相信关系值得被长期经营。</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-dot"></div>
+          <div class="s5-title">客户成功导向者</div>
+          <div class="s5-desc">愿意帮助客户获得结果。</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-dot"></div>
+          <div class="s5-title">专业可靠的人</div>
+          <div class="s5-desc">拥有行业口碑与职业底线。</div>
+        </div>
+        <div class="s5-item">
+          <div class="s5-dot"></div>
+          <div class="s5-title">开放共创的人</div>
+          <div class="s5-desc">愿意一起建设更好的产品。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6 -->
+    <div class="sec">
+      <div class="s6-head">申请流程</div>
+      <div class="s6-steps">
+        <div class="s6-step">
+          <div class="s6-dot-wrap"><i class="ti ti-send" aria-hidden="true"></i></div>
+          <div class="s6-label">提交申请</div>
+        </div>
+        <div class="s6-step">
+          <div class="s6-dot-wrap"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
+          <div class="s6-label">初步沟通</div>
+        </div>
+        <div class="s6-step">
+          <div class="s6-dot-wrap"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <div class="s6-label">伙伴认证</div>
+        </div>
+        <div class="s6-step">
+          <div class="s6-dot-wrap"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+          <div class="s6-label">加入计划</div>
+        </div>
+      </div>
+      <div class="s6-closing">
+        <div class="s6-closing-text">只筛选真正的同行者。</div>
+      </div>
+    </div>
+
+    <!-- S7 CTA -->
+    <div class="s7" id="apply">
+      <div class="orb s7-orb1"></div>
+      <div class="orb s7-orb2"></div>
+      <div class="s7-pre">
+        如果你深耕美业，<br>
+        并相信信任比流量更重要。
+      </div>
+      <div class="s7-invite">欢迎成为<span>回客</span>创始伙伴。</div>
+      <div class="s7-btn-wrap">
+        <a href="https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcnuR2o4V9ZPTktpuPyfJ4cic" class="btn-primary btn-primary-lg">
+          立即申请成为创始伙伴
+        </a>
+      </div>
+      <div class="s7-sub">申请免费 · 无加盟费 · 24小时内回复</div>
+      <div class="s7-brand">
+        <div class="s7-brand-name">回客</div>
+        <div class="s7-brand-slogan">让每一段关系都不被遗忘。</div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
