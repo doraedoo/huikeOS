@@ -27,6 +27,36 @@
         .ambient-glow-1 { width: 1200px; height: 1200px; background: radial-gradient(circle, rgba(109, 74, 255, 0.12) 0%, transparent 70%); top: -400px; left: -300px; }
         .ambient-glow-2 { width: 1000px; height: 1000px; background: radial-gradient(circle, rgba(255, 110, 199, 0.08) 0%, transparent 70%); bottom: -300px; right: -400px; }
         
+        /* 顶部固定导航 */
+        .top-nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 72px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            z-index: 100;
+            display: flex; align-items: center;
+        }
+        .top-nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 40px;
+            width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .top-nav-logo { display: flex; flex-direction: column; text-decoration: none; }
+        .top-nav-logo-text { font-size: 20px; font-weight: 700; color: var(--text-main); line-height: 1; font-family: 'Noto Serif SC', serif; }
+        .top-nav-logo-sub { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 3px; font-family: 'Inter', sans-serif; font-weight: 500; }
+        .top-nav-links { display: flex; align-items: center; gap: 36px; }
+        .top-nav-link { font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.2s; font-family: 'Inter', sans-serif; }
+        .top-nav-link:hover { color: var(--text-main); }
+        .top-nav-link.active { color: var(--primary); font-weight: 600; }
+        .top-nav-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 10px 24px; border-radius: 6px; font-size: 14px; font-weight: 500;
+            background: var(--text-main); color: #FFFFFF; text-decoration: none;
+            transition: background 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .top-nav-btn:hover { background: #1f2937; }
+        @media (max-width: 768px) { .top-nav-links { display: none; } }
+
         /* 右侧悬浮导航 */
         .timeline-nav { position: fixed; right: 40px; top: 50%; transform: translateY(-50%); z-index: 40; display: flex; flex-direction: column; gap: 16px; padding: 24px 16px; background: rgba(255, 255, 255, 0.8); border-radius: 24px; border: 1px solid rgba(109, 74, 255, 0.08); backdrop-filter: blur(10px); }
         .timeline-item { width: 12px; height: 12px; border-radius: 50%; background: rgba(109, 74, 255, 0.2); border: 2px solid rgba(109, 74, 255, 0.1); cursor: pointer; transition: all 0.3s ease; }
@@ -37,7 +67,7 @@
         .section:last-child { border-bottom: none; }
         
         /* Hero 屏 */
-        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 40px 80px; text-align: center; position: relative; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 172px 40px 80px; text-align: center; position: relative; }
         .hero-title { font-size: 88px; font-weight: 700; line-height: 1.15; margin-bottom: 24px; color: var(--text-main); letter-spacing: -0.03em; }
         .hero-subtitle { font-size: 32px; font-weight: 400; color: var(--text-muted); margin-bottom: 36px; }
         .hero-brand-block { margin-bottom: 48px; }
@@ -188,6 +218,22 @@
     </style>
 </head>
 <body>
+
+    <!-- 顶部固定导航 -->
+    <div class="top-nav">
+        <div class="top-nav-inner">
+            <a href="/" class="top-nav-logo">
+                <span class="top-nav-logo-text">回客</span>
+                <span class="top-nav-logo-sub">Relationship OS</span>
+            </a>
+            <div class="top-nav-links">
+                <a href="/" class="top-nav-link active">首页</a>
+                <a href="/how-it-works.html" class="top-nav-link">工作方式</a>
+                <a href="/partner.html" class="top-nav-link">创始伙伴</a>
+            </div>
+            <a href="https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcn8dZjroLNPuxDJnOg8IjeIb" target="_blank" class="top-nav-btn">申请首批体验官</a>
+        </div>
+    </div>
 
     <!-- Timeline 右侧悬浮导航 -->
     <div class="timeline-nav">
