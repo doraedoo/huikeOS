@@ -260,11 +260,59 @@
         .footer-slogan-single { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #4B5563; letter-spacing: 0.05em; }
         .footer-right-copyright { font-family: 'Inter', sans-serif; font-size: 12px; color: #9CA3AF; letter-spacing: 0.02em; }
 
-        /* Responsive */
+        /* 汉堡菜单 */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-main);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0; right: 0;
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px 24px;
+            z-index: 99;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            display: block;
+        }
+        .mobile-menu-link:last-child { border-bottom: none; }
+        .mobile-menu-link.active { color: var(--primary); font-weight: 600; }
+
         @media (max-width: 768px) {
             .container { padding: 0 20px; }
-            nav { height: 70px; }
             .nav-links { display: none; }
+            .hamburger { display: flex; }
+        }
             .page-title { font-size: 36px; }
             .page-subtitle { font-size: 15px; }
             .step-section { grid-template-columns: 1fr; gap: 40px; padding: 72px 0; }
@@ -292,10 +340,21 @@
             <div class="nav-links">
                 <a href="/" class="nav-link">首页</a>
                 <a href="/how-it-works.html" class="nav-link active">工作方式</a>
+                <a href="/partner.html" class="nav-link">创始伙伴</a>
             </div>
-            <a href="/#apply-box" class="btn btn-primary">申请首批体验官</a>
+            <a href="/#apply-box" class="btn btn-primary" id="nav-cta">申请首批体验官</a>
+            <button class="hamburger" id="hamburger" aria-label="菜单">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
+
+    <!-- 移动端菜单 -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="/" class="mobile-menu-link">首页</a>
+        <a href="/how-it-works.html" class="mobile-menu-link active">工作方式</a>
+        <a href="/partner.html" class="mobile-menu-link">创始伙伴</a>
+    </div>
 
     <!-- Hero -->
     <section class="page-hero">
@@ -322,34 +381,34 @@
                 </div>
                 <div>
                     <div class="import-visual">
-                        <div class="import-icon">📋</div>
-                        <div class="import-label">导入客户名单</div>
-                        <div class="import-sub">支持 Excel 或 CSV 格式</div>
+                        <div class="import-icon">🔗</div>
+                        <div class="import-label">连接已有关系</div>
+                        <div class="import-sub">从你已经认识的人开始</div>
                         <div class="import-formats">
-                            <span class="import-badge">Excel</span>
-                            <span class="import-badge">CSV</span>
-                            <span class="import-badge">手动录入</span>
+                            <span class="import-badge">微信记录</span>
+                            <span class="import-badge">消费记录</span>
+                            <span class="import-badge">客户名单</span>
                         </div>
                         <div class="import-progress">
                             <div class="import-progress-bar-bg">
                                 <div class="import-progress-bar"></div>
                             </div>
                             <div class="import-progress-label">
-                                <span>正在整理客户档案…</span>
+                                <span>正在整理关系档案…</span>
                                 <span>248 / 341</span>
                             </div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px; margin-top: 16px;">
                         <div class="ui-card" style="flex: 1; padding: 16px 20px;">
-                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">已导入</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">已连接</div>
                             <div style="font-size: 28px; font-weight: 700; color: var(--text-main); font-family: 'Noto Serif SC', serif;">248</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">位客户</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">段关系</div>
                         </div>
                         <div class="ui-card" style="flex: 1; padding: 16px 20px;">
-                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">识别重复</div>
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">待补充</div>
                             <div style="font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'Noto Serif SC', serif;">12</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">条待确认</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">段关系信息</div>
                         </div>
                     </div>
                 </div>
@@ -554,5 +613,27 @@
         </div>
     </footer>
 
+    <script>
+        // 移动端隐藏申请按钮
+        if (window.innerWidth <= 768) {
+            const cta = document.getElementById('nav-cta');
+            if (cta) cta.style.display = 'none';
+        }
+        // 汉堡菜单
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (hamburger && mobileMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('open');
+                mobileMenu.classList.toggle('open');
+            });
+            mobileMenu.querySelectorAll('.mobile-menu-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburger.classList.remove('open');
+                    mobileMenu.classList.remove('open');
+                });
+            });
+        }
+    </script>
 </body>
 </html>
