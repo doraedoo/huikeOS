@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作方式 - 回客 Relationship OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6D4AFF;
+            --secondary: #FF6EC7;
+            --bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --bg-light: #FAFAFA;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); -webkit-font-smoothing: antialiased; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 600; letter-spacing: -0.02em; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0; height: 80px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5); z-index: 100;
+        }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; height: 100%; }
+        .logo-area { display: flex; flex-direction: column; text-decoration: none; }
+        .logo-text { font-size: 22px; font-weight: 700; color: var(--text-main); line-height: 1; }
+        .logo-sub { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-family: 'Inter', sans-serif; font-weight: 500; }
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-link { font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+        .nav-link:hover { color: var(--text-main); }
+        .nav-link.active { color: var(--primary); font-weight: 600; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer; text-decoration: none; }
+        .btn-primary { background: var(--text-main); color: var(--bg); border: 1px solid var(--text-main); }
+        .btn-primary:hover { background: #1f2937; }
+
+        /* Hero */
+        .page-hero {
+            padding-top: 80px;
+            min-height: 56vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-hero-inner { max-width: 720px; }
+        .page-meta { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 20px; font-family: 'Inter', sans-serif; }
+        .page-title { font-size: 52px; font-weight: 700; color: var(--text-main); line-height: 1.3; margin-bottom: 24px; letter-spacing: 0.01em; }
+        .page-subtitle { font-size: 17px; color: var(--text-muted); line-height: 1.8; max-width: 540px; margin: 0 auto; }
+
+        /* Steps Layout */
+        .steps-wrapper { padding: 0 0 160px 0; }
+
+        .step-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+            padding: 120px 0;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.4);
+        }
+        .step-section:last-child { border-bottom: none; }
+        .step-section.reverse { direction: rtl; }
+        .step-section.reverse > * { direction: ltr; }
+
+        .step-meta { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px; font-family: 'Inter', sans-serif; }
+        .step-title { font-size: 34px; color: var(--text-main); margin-bottom: 20px; font-weight: 600; line-height: 1.3; }
+        .step-desc { font-size: 16px; color: var(--text-muted); line-height: 1.85; }
+        .step-desc p { margin-bottom: 12px; }
+        .step-desc p:last-child { margin-bottom: 0; }
+
+        /* UI Cards */
+        .ui-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .ui-card-header {
+            font-size: 13px; font-weight: 700; color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px; margin-bottom: 20px;
+            text-transform: uppercase; letter-spacing: 0.06em; font-family: 'Inter', sans-serif;
+        }
+        .ui-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 13px 0; border-bottom: 1px solid #F3F4F6; font-size: 14px;
+        }
+        .ui-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .ui-tag {
+            font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px;
+        }
+
+        /* Step 1: Import */
+        .import-visual {
+            background: var(--bg-light);
+            border: 1px dashed #D1D5DB;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+        }
+        .import-icon { font-size: 40px; margin-bottom: 16px; }
+        .import-label { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+        .import-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+        .import-formats { display: flex; gap: 8px; justify-content: center; }
+        .import-badge { background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--text-main); font-family: 'Inter', sans-serif; }
+        .import-progress { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .import-progress-bar-bg { height: 4px; background: #F3F4F6; border-radius: 2px; overflow: hidden; }
+        .import-progress-bar { height: 100%; width: 72%; background: var(--primary); border-radius: 2px; }
+        .import-progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+
+        /* Step 2: Relationship */
+        .relationship-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+        }
+        .rel-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 14px;
+        }
+        .rel-avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: var(--primary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; font-weight: 700; color: #FFFFFF;
+            font-family: 'Noto Serif SC', serif;
+            flex-shrink: 0;
+        }
+        .rel-name { font-size: 16px; font-weight: 600; color: var(--text-main); }
+        .rel-stage { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .rel-stage-badge {
+            margin-left: auto;
+            font-size: 11px; font-weight: 600;
+            background: rgba(109,74,255,0.08);
+            color: var(--primary);
+            padding: 4px 10px; border-radius: 20px;
+            white-space: nowrap;
+        }
+        .rel-body { padding: 20px 24px; }
+        .rel-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #F9FAFB; font-size: 13px; }
+        .rel-row:last-child { border-bottom: none; }
+        .rel-label { color: var(--text-muted); }
+        .rel-value { font-weight: 500; color: var(--text-main); }
+        .rel-stages {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-light);
+        }
+        .rel-stages-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-family: 'Inter', sans-serif; }
+        .rel-stages-track { display: flex; gap: 4px; align-items: center; }
+        .stage-dot { height: 6px; border-radius: 3px; }
+        .stage-dot.done { background: var(--text-main); flex: 1; }
+        .stage-dot.active { background: var(--primary); flex: 1; box-shadow: 0 0 8px rgba(109,74,255,0.4); }
+        .stage-dot.future { background: #E5E7EB; flex: 1; }
+        .rel-stages-labels { display: flex; justify-content: space-between; margin-top: 8px; }
+        .stage-label-text { font-size: 10px; color: var(--text-muted); font-family: 'Inter', sans-serif; }
+        .stage-label-text.active-label { color: var(--primary); font-weight: 600; }
+
+        /* Step 3: Decision */
+        .decision-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+        }
+        .decision-header {
+            padding: 16px 24px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .decision-date { font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .decision-count { font-size: 12px; color: var(--text-muted); }
+        .decision-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        .decision-item:last-child { border-bottom: none; }
+        .decision-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .decision-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+        .decision-badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
+        .badge-urgent { background: #FEF3C7; color: #D97706; }
+        .badge-moment { background: #EEF2FF; color: var(--primary); }
+        .badge-birthday { background: #FDF2F8; color: #9D174D; }
+        .decision-reason { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+        .decision-action { margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--primary); }
+
+        /* Step 4: Feedback loop */
+        .loop-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+        }
+        .loop-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .loop-header-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+        .loop-header-sub { font-size: 12px; color: var(--text-muted); }
+        .loop-timeline { padding: 20px 24px; }
+        .loop-event { display: flex; gap: 14px; padding: 10px 0; position: relative; }
+        .loop-event-line {
+            display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+        }
+        .loop-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+        .loop-dot.done { background: var(--text-main); }
+        .loop-dot.active { background: var(--primary); box-shadow: 0 0 8px rgba(109,74,255,0.4); }
+        .loop-line-seg { width: 1px; flex: 1; background: var(--border); margin: 4px 0; min-height: 20px; }
+        .loop-event-content { flex: 1; padding-bottom: 8px; }
+        .loop-event-title { font-size: 13px; font-weight: 600; color: var(--text-main); }
+        .loop-event-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+        .loop-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            background: rgba(109,74,255,0.03);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .loop-footer-icon { font-size: 16px; }
+        .loop-footer-text { font-size: 12px; color: var(--primary); font-weight: 500; }
+
+        /* Terminal Footer */
+        .terminal-block {
+            width: 100%; border-top: 1px solid rgba(229, 231, 235, 0.6);
+            background-color: var(--bg); padding-bottom: 160px;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+        }
+        .terminal-line { width: 1px; height: 160px; background: linear-gradient(to bottom, rgba(229,231,235,0.8) 0%, var(--primary) 100%); }
+        .terminal-dot-center { width: 16px; height: 16px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 24px rgba(109, 74, 255, 0.35); margin-top: -2px; margin-bottom: 48px; }
+        .terminal-title { font-family: 'Noto Serif SC', serif; font-size: 64px; font-weight: 700; color: var(--text-main); line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.02em; }
+        .terminal-slogan { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 400; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 64px; }
+        .terminal-card-box { background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; padding: 64px 80px; width: 100%; max-width: 600px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.015); display: flex; flex-direction: column; align-items: center; }
+        .card-main-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; }
+        .card-secondary-title { font-family: 'Noto Serif SC', serif; font-size: 24px; font-weight: 500; color: #374151; margin-bottom: 24px; line-height: 1.4; }
+        .card-sub-desc { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 400; color: var(--text-muted); line-height: 1.6; margin-bottom: 36px; }
+        .card-btn { width: 100%; max-width: 320px; padding: 16px; background: var(--text-main); color: #FFFFFF; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; }
+        .card-btn:hover { background: #1f2937; }
+
+        /* Footer */
+        footer { padding: 140px 0 60px 0; border-top: 1px solid rgba(229, 231, 235, 0.6); background: #FFFFFF; }
+        .footer-container { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .footer-left-group { display: flex; align-items: center; gap: 20px; }
+        .footer-brand { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em; }
+        .footer-divider { width: 1px; height: 14px; background-color: #D1D5DB; }
+        .footer-slogan-single { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #4B5563; letter-spacing: 0.05em; }
+        .footer-right-copyright { font-family: 'Inter', sans-serif; font-size: 12px; color: #9CA3AF; letter-spacing: 0.02em; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            nav { height: 70px; }
+            .nav-links { display: none; }
+            .page-title { font-size: 36px; }
+            .page-subtitle { font-size: 15px; }
+            .step-section { grid-template-columns: 1fr; gap: 40px; padding: 72px 0; }
+            .step-section.reverse { direction: ltr; }
+            .step-title { font-size: 26px; }
+            .step-desc { font-size: 15px; }
+            .terminal-title { font-size: 48px; }
+            .terminal-card-box { padding: 48px 24px; }
+            .card-main-title { font-size: 24px; }
+            footer { padding: 80px 0 40px 0; }
+            .footer-container { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+            .footer-left-group { flex-direction: column; gap: 8px; }
+            .footer-divider { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-container">
+            <a href="/" class="logo-area">
+                <span class="logo-text">回客</span>
+                <span class="logo-sub">Relationship OS</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/how-it-works.html" class="nav-link active">工作方式</a>
+            </div>
+            <a href="/#apply-box" class="btn btn-primary">申请首批体验官</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="page-hero">
+        <div class="page-hero-inner">
+            <div class="page-meta">工作方式 · How It Works</div>
+            <h1 class="page-title">回客是怎么工作的</h1>
+            <p class="page-subtitle">不是提醒你联系客户，而是理解关系正在发生什么，并告诉你下一步为什么这样做。</p>
+        </div>
+    </section>
+
+    <!-- Steps -->
+    <div class="steps-wrapper">
+        <div class="container">
+
+            <!-- Step 1 -->
+            <section class="step-section">
+                <div>
+                    <div class="step-meta">Step 01 · 连接客户</div>
+                    <h2 class="step-title">从你已有的客户开始</h2>
+                    <div class="step-desc">
+                        <p>上传名单，或者手动记录。</p>
+                        <p>回客整理每一位客户的信息，让零散的数据变成可以理解的关系。</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="import-visual">
+                        <div class="import-icon">📋</div>
+                        <div class="import-label">导入客户名单</div>
+                        <div class="import-sub">支持 Excel 或 CSV 格式</div>
+                        <div class="import-formats">
+                            <span class="import-badge">Excel</span>
+                            <span class="import-badge">CSV</span>
+                            <span class="import-badge">手动录入</span>
+                        </div>
+                        <div class="import-progress">
+                            <div class="import-progress-bar-bg">
+                                <div class="import-progress-bar"></div>
+                            </div>
+                            <div class="import-progress-label">
+                                <span>正在整理客户档案…</span>
+                                <span>248 / 341</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <div class="ui-card" style="flex: 1; padding: 16px 20px;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">已导入</div>
+                            <div style="font-size: 28px; font-weight: 700; color: var(--text-main); font-family: 'Noto Serif SC', serif;">248</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">位客户</div>
+                        </div>
+                        <div class="ui-card" style="flex: 1; padding: 16px 20px;">
+                            <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">识别重复</div>
+                            <div style="font-size: 28px; font-weight: 700; color: var(--primary); font-family: 'Noto Serif SC', serif;">12</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">条待确认</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2 -->
+            <section class="step-section reverse">
+                <div>
+                    <div class="step-meta">Step 02 · 理解关系</div>
+                    <h2 class="step-title">每一位客户，<br>都拥有自己的关系档案</h2>
+                    <div class="step-desc">
+                        <p>回客记住的不只是姓名和消费记录。</p>
+                        <p>它理解：客户什么时候认识你；最近一次互动是什么；现在处于怎样的关系阶段——</p>
+                        <p>刚刚认识、正在建立信任、经常回来，还是正在慢慢沉默。</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="relationship-card">
+                        <div class="rel-header">
+                            <div class="rel-avatar">王</div>
+                            <div>
+                                <div class="rel-name">王雪梅</div>
+                                <div class="rel-stage">认识于 2023年3月</div>
+                            </div>
+                            <div class="rel-stage-badge">经常回来</div>
+                        </div>
+                        <div class="rel-body">
+                            <div class="rel-row">
+                                <span class="rel-label">最近互动</span>
+                                <span class="rel-value">72天前</span>
+                            </div>
+                            <div class="rel-row">
+                                <span class="rel-label">到访次数</span>
+                                <span class="rel-value">14次</span>
+                            </div>
+                            <div class="rel-row">
+                                <span class="rel-label">关注重点</span>
+                                <span class="rel-value">长线抗衰 · 皮肤亮泽</span>
+                            </div>
+                            <div class="rel-row">
+                                <span class="rel-label">记忆备注</span>
+                                <span class="rel-value" style="text-align: right; max-width: 60%; font-size: 12px;">皮肤敏感，喜安静</span>
+                            </div>
+                        </div>
+                        <div class="rel-stages">
+                            <div class="rel-stages-label">关系阶段</div>
+                            <div class="rel-stages-track">
+                                <div class="stage-dot done"></div>
+                                <div class="stage-dot done"></div>
+                                <div class="stage-dot active"></div>
+                                <div class="stage-dot future"></div>
+                                <div class="stage-dot future"></div>
+                            </div>
+                            <div class="rel-stages-labels">
+                                <span class="stage-label-text">认识</span>
+                                <span class="stage-label-text">信任</span>
+                                <span class="stage-label-text active-label">常来往</span>
+                                <span class="stage-label-text">推荐</span>
+                                <span class="stage-label-text">沉默</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3 -->
+            <section class="step-section">
+                <div>
+                    <div class="step-meta">Step 03 · 做出判断</div>
+                    <h2 class="step-title">每天，告诉你<br>最值得联系谁</h2>
+                    <div class="step-desc">
+                        <p>每一天，回客帮助你发现：今天最值得联系哪位客户。为什么是这个时刻。应该如何开始这次交流。</p>
+                        <p>每个客户的重要时刻不同。</p>
+                        <p>不是群发，不是促销。是基于关系状态的下一步建议。</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="decision-card">
+                        <div class="decision-header">
+                            <span class="decision-date">今日建议</span>
+                            <span class="decision-count">3 位客户</span>
+                        </div>
+                        <div class="decision-item">
+                            <div class="decision-top">
+                                <span class="decision-name">王雪梅</span>
+                                <span class="decision-badge badge-urgent">72天未联系</span>
+                            </div>
+                            <div class="decision-reason">过去一年到店14次，是忠实客户。这个时机发一条换季关怀，比促销更自然。</div>
+                            <div class="decision-action">→ 建议：发一条换季问候</div>
+                        </div>
+                        <div class="decision-item">
+                            <div class="decision-top">
+                                <span class="decision-name">林婉儿</span>
+                                <span class="decision-badge badge-birthday">生日还有3天</span>
+                            </div>
+                            <div class="decision-reason">她即将生日，是建立更深连接的好时机。</div>
+                            <div class="decision-action">→ 建议：提前送上生日祝福</div>
+                        </div>
+                        <div class="decision-item">
+                            <div class="decision-top">
+                                <span class="decision-name">陈雪曼</span>
+                                <span class="decision-badge badge-moment">刚成为常客</span>
+                            </div>
+                            <div class="decision-reason">第4次到访后，关系进入新阶段，正是巩固信任的窗口期。</div>
+                            <div class="decision-action">→ 建议：询问服务体验</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4 -->
+            <section class="step-section reverse">
+                <div>
+                    <div class="step-meta">Step 04 · 关系持续成长</div>
+                    <h2 class="step-title">每一次联系，<br>都比上一次更准确</h2>
+                    <div class="step-desc">
+                        <p>每一次交流和反馈，都会成为下一次判断的一部分。</p>
+                        <p>回客记住发生过什么，持续理解这段关系。</p>
+                        <p>让每一次联系，都比上一次更准确。</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="loop-card">
+                        <div class="loop-header">
+                            <div class="loop-header-title">王雪梅 · 关系更新</div>
+                            <div class="loop-header-sub">今天发生了什么</div>
+                        </div>
+                        <div class="loop-timeline">
+                            <div class="loop-event">
+                                <div class="loop-event-line">
+                                    <div class="loop-dot done"></div>
+                                    <div class="loop-line-seg"></div>
+                                </div>
+                                <div class="loop-event-content">
+                                    <div class="loop-event-title">回客建议联系</div>
+                                    <div class="loop-event-desc">72天未联系，建议发换季关怀</div>
+                                </div>
+                            </div>
+                            <div class="loop-event">
+                                <div class="loop-event-line">
+                                    <div class="loop-dot done"></div>
+                                    <div class="loop-line-seg"></div>
+                                </div>
+                                <div class="loop-event-content">
+                                    <div class="loop-event-title">你发出问候</div>
+                                    <div class="loop-event-desc">记录了这次互动</div>
+                                </div>
+                            </div>
+                            <div class="loop-event">
+                                <div class="loop-event-line">
+                                    <div class="loop-dot done"></div>
+                                    <div class="loop-line-seg"></div>
+                                </div>
+                                <div class="loop-event-content">
+                                    <div class="loop-event-title">她回复并预约</div>
+                                    <div class="loop-event-desc">下周三 14:00 到店</div>
+                                </div>
+                            </div>
+                            <div class="loop-event">
+                                <div class="loop-event-line">
+                                    <div class="loop-dot active"></div>
+                                </div>
+                                <div class="loop-event-content">
+                                    <div class="loop-event-title" style="color: var(--primary);">关系状态更新</div>
+                                    <div class="loop-event-desc">沉默中的客户重新活跃，下次判断将更准确</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="loop-footer">
+                            <span class="loop-footer-icon">🔄</span>
+                            <span class="loop-footer-text">这次互动已纳入关系理解，影响下一次建议</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Terminal -->
+    <section class="terminal-block">
+        <div class="terminal-line"></div>
+        <div class="terminal-dot-center"></div>
+        <h2 class="terminal-title">回客</h2>
+        <p class="terminal-slogan">让每一段关系都不被遗忘</p>
+        <div class="terminal-card-box">
+            <h3 class="card-main-title">如果客户关系是资产</h3>
+            <div class="card-secondary-title">那它不该只存在微信里</div>
+            <p class="card-sub-desc">我们正在邀请首批体验官<br>一起验证关系经营的新方式</p>
+            <button class="card-btn" onclick="window.location.href='https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcn8dZjroLNPuxDJnOg8IjeIb'">立即申请</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-left-group">
+                <span class="footer-brand">回客</span>
+                <div class="footer-divider"></div>
+                <div class="footer-slogan-single">让每一段关系 都不被遗忘</div>
+            </div>
+            <div class="footer-right-copyright">© 上海神工天降智能科技有限公司</div>
+        </div>
+    </footer>
+
+</body>
+</html>
