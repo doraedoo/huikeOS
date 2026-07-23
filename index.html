@@ -60,9 +60,10 @@
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             background: none;
             border: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .hamburger span {
             display: block;
@@ -103,8 +104,9 @@
         .mobile-menu-link.active { color: var(--primary); font-weight: 600; }
 
         @media (max-width: 768px) {
-            .top-nav-links { display: none; }
-            .hamburger { display: flex; }
+            .top-nav-links { display: none !important; }
+            .top-nav-btn { display: none !important; }
+            .hamburger { display: -webkit-flex !important; display: flex !important; }
         }
 
         /* 右侧悬浮导航 */
@@ -240,10 +242,17 @@
             .section { padding: 80px 20px; }
             .container { padding: 0 20px; }
             .journey-section { padding: 80px 20px; }
-            .two-column { grid-template-columns: 1fr; gap: 40px; padding: 40px 0; }
+            .two-column { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px; overflow: hidden; }
             .two-column-left { padding-top: 0; max-width: 100%; }
             .two-column.reverse .two-column-left { order: 0; }
             .two-column.reverse .two-column-right { order: 1; }
+            .two-column-right { width: 100%; overflow: hidden; max-width: 100%; }
+            .network-visual-box { overflow: hidden; }
+            .net-split-row { flex-wrap: nowrap; }
+            .net-split-column { min-width: 0; flex: 1; }
+            .net-node-card { min-width: 0; padding: 6px 4px; }
+            .net-node-title { font-size: 9px; }
+            .net-node-val { font-size: 9px; }
             .timeline-nav { display: none; }
             .hero-title { font-size: 48px; }
             .hero-subtitle { font-size: 24px; }
@@ -258,7 +267,7 @@
             .scale-pain-grid { gap: 24px; margin-bottom: 30px; }
             .scale-pain-item { padding: 16px 0; }
             .journey-node:not(:last-child)::after { left: 44px; top: 90px; height: 50px; }
-            .product-screenshot { max-width: 100%; height: 540px; }
+            .product-screenshot { max-width: 100%; width: 100%; height: 540px; }
             .beta-section { padding: 60px 0; }
             .beta-section h2 { font-size: 28px; }
             .beta-desc { font-size: 16px; }
