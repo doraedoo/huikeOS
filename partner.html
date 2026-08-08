@@ -3,439 +3,248 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>回客创始伙伴计划</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <title>创始伙伴 - 回客 Relationship OS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: #F7F4EF;
-      color: #2D2D2D;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .wrapper {
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 24px 16px 64px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --dk: #1A2E2A;
-      --mid: #2D4A44;
-      --lt: #4A7A72;
-      --gold: #C4963B;
-      --muted: #9BB5AE;
-      --border: rgba(0,0,0,0.08);
-      --bg: #FFFFFF;
-      --bg2: #F7F4EF;
-      --text: #2D2D2D;
-      --text2: #666;
-      --text3: #999;
-      --radius-lg: 16px;
-      --radius-md: 10px;
+      --purple:       #6D4AFF;
+      --purple-hover: #5A3DD1;
+      --purple-light: rgba(109,74,255,0.08);
+      --purple-pale:  #EEE9FF;
+      --bg:           #FFFFFF;
+      --bg-off:       #FAFAFA;
+      --text:         #111827;
+      --text-2:       #4B5563;
+      --text-3:       #9CA3AF;
+      --border:       #E5E7EB;
+      --serif:        'Noto Serif SC', serif;
+      --sans:         'Inter', -apple-system, 'PingFang SC', sans-serif;
+      --r-full:       100px;
+      --ease:         0.20s ease;
     }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
 
-    /* S1 Hero */
-    .s1 {
-      background: var(--dk);
-      padding: 80px 52px 72px;
-      border-radius: var(--radius-lg);
-      position: relative;
-      overflow: hidden;
-      min-height: 400px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      border-style: solid;
-      border-color: #2D4A44;
-    }
-    .orb1 { top: -90px; right: -90px; width: 340px; height: 340px; border-width: 60px; opacity: .45; }
-    .orb2 { bottom: -100px; left: 18%; width: 200px; height: 200px; border-width: 36px; opacity: .22; }
-    .s1-h1 {
-      font-size: 48px;
-      font-weight: 500;
-      color: #F7F4EF;
-      line-height: 1.15;
-      margin-bottom: 22px;
-      position: relative;
-      z-index: 1;
-    }
-    .s1-plan {
-      font-size: 13px;
-      letter-spacing: .08em;
-      color: var(--muted);
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-    }
-    .s1-who {
-      margin-bottom: 36px;
-      position: relative;
-      z-index: 1;
-    }
-    .s1-who-line {
-      font-size: 15px;
-      color: #4A7A72;
-      line-height: 1.9;
-    }
+    /* ── Nav ── */
+    .nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(229,231,235,0.7); z-index: 100; }
+    .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 40px; height: 100%; display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo img { height: 32px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-link { font-size: 14px; color: var(--text-2); transition: color var(--ease); }
+    .nav-link:hover, .nav-link.active { color: var(--text); }
+    .nav-btn { font-size: 13px; font-weight: 500; background: var(--purple); color: #fff; padding: 9px 22px; border-radius: var(--r-full); transition: background var(--ease); }
+    .nav-btn:hover { background: var(--purple-hover); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 8px; }
+    .hamburger span { display: block; width: 20px; height: 1.5px; background: var(--text); border-radius: 2px; transition: all .3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(255,255,255,.97); backdrop-filter: blur(20px); flex-direction: column; z-index: 99; border-bottom: 1px solid var(--border); padding: 8px 40px 20px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-link { font-size: 15px; color: var(--text-2); padding: 14px 0; border-bottom: 1px solid var(--border); display: block; }
+    .mobile-link:last-child { border-bottom: none; }
 
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background-color: #C4963B;
-      color: #FFFFFF;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 12px 28px;
-      border-radius: 100px;
-      border: none;
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity .15s;
-      position: relative;
-      z-index: 1;
-      font-family: inherit;
+    /* ── S1 Hero ── */
+    .hero {
+      padding-top: 64px; min-height: 100vh;
+      background: linear-gradient(150deg, #FFFFFF 0%, #F7F4FF 50%, #EDE8FF 100%);
+      display: flex; flex-direction: column; justify-content: center;
+      padding-left: 224px; padding-right: 64px; padding-bottom: 80px; padding-top: 168px;
+      position: relative; overflow: hidden;
     }
-    .btn-primary:hover { opacity: .87; }
-    .btn-primary-lg { font-size: 15px; padding: 14px 36px; }
+    .hero-glow-1 { position: absolute; top: -120px; right: -120px; width: 520px; height: 520px; border-radius: 50%; background: radial-gradient(ellipse, rgba(174,148,255,0.20) 0%, rgba(109,74,255,0.06) 50%, transparent 70%); pointer-events: none; }
+    .hero-glow-2 { position: absolute; bottom: -80px; left: 10%; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(ellipse, rgba(109,74,255,0.06) 0%, transparent 70%); pointer-events: none; }
+    .hero-h1 { font-family: var(--serif); font-size: clamp(34px, 5vw, 56px); font-weight: 500; color: var(--text); line-height: 1.15; margin-bottom: 28px; position: relative; z-index: 1; max-width: 640px; }
+    .hero-sub { font-size: 19px; color: var(--text-2); line-height: 2; margin-bottom: 48px; position: relative; z-index: 1; max-width: 480px; }
+    .hero-cta-link { font-size: 15px; color: var(--purple); position: relative; z-index: 1; transition: color var(--ease); }
+    .hero-cta-link:hover { color: var(--purple-hover); }
 
-    /* Sections */
-    .sec {
-      background: var(--bg);
-      padding: 56px 52px;
-      border-radius: var(--radius-lg);
-    }
+    /* ── S2 Partner 定位 ── */
+    .s2 { background: #F4F2F9; padding: 96px 64px; min-height: 100vh; display: flex; align-items: center; }
+    .s2-inner { max-width: 900px; margin: 0 auto; width: 100%; }
+    .s2-h2 { font-family: var(--serif); font-size: clamp(26px, 3.5vw, 40px); font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 56px; }
+    .s2-roles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; margin-bottom: 64px; }
+    .s2-role { display: flex; flex-direction: column; align-items: flex-start; }
+    .s2-role-dot { width: 48px; height: 48px; border-radius: 50%; background: var(--purple-pale); border: 1.5px solid rgba(109,74,255,0.22); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: var(--purple); margin-bottom: 22px; flex-shrink: 0; }
+    .s2-role-name { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
+    .s2-role-desc { font-size: 15px; color: var(--text-2); line-height: 1.85; }
+    .s2-closing { padding-top: 36px; border-top: 1px solid rgba(109,74,255,0.12); max-width: 600px; }
+    .s2-closing-text { font-family: var(--serif); font-size: clamp(20px, 2.8vw, 28px); color: var(--text); line-height: 1.6; font-weight: 500; }
+    .s2-closing-em { color: var(--purple); }
 
-    .s2-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 20px; line-height: 1.3; }
-    .s2-group { margin-bottom: 24px; }
-    .s2-item { font-size: 20px; font-weight: 500; color: var(--text2); line-height: 1.7; }
-    .s2-item.lit { color: var(--text); }
-    .s2-close { font-size: 17px; line-height: 1.7; color: var(--text2); }
-    .s2-close span { color: var(--gold); font-weight: 500; }
+    /* ── S3 创始伙伴价值 ── */
+    .s3 { background: linear-gradient(160deg, #F9F7FF 0%, #F0EBFF 100%); padding: 96px 64px; min-height: 100vh; display: flex; align-items: center; }
+    .s3-inner { max-width: 860px; margin: 0 auto; padding-left: 100px; width: 100%; }
+    .s3-h2 { font-family: var(--serif); font-size: clamp(26px, 3.5vw, 40px); font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 80px; }
+    .s3-values { display: flex; flex-direction: column; gap: 48px; }
+    .s3-value { display: grid; grid-template-columns: 32px 1fr; gap: 24px; align-items: start; }
+    .s3-value-anchor { display: flex; flex-direction: column; align-items: center; padding-top: 4px; }
+    .s3-value-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(109,74,255,0.35); flex-shrink: 0; }
+    .s3-value-line { width: 1px; height: 100%; min-height: 32px; background: rgba(109,74,255,0.12); margin-top: 6px; }
+    .s3-value:last-child .s3-value-line { display: none; }
+    .s3-value-num { font-size: 10px; font-weight: 600; letter-spacing: .1em; color: var(--purple); opacity: 0.4; margin-bottom: 6px; }
+    .s3-value-name { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 10px; }
+    .s3-value-desc { font-size: 15px; color: var(--text-2); line-height: 1.9; }
 
-    /* S3 */
-    .s3-wrap {
-      background: var(--dk);
-      border-radius: var(--radius-lg);
-      padding: 40px 48px;
-    }
-    .s3-head { font-size: 24px; font-weight: 500; color: #F7F4EF; line-height: 1.35; margin-bottom: 28px; }
-    .s3-items { margin-bottom: 24px; }
-    .s3-item {
-      font-size: 16px;
-      color: var(--muted);
-      line-height: 1.6;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-    .s3-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      border: 1.5px solid #C4963B;
-      flex-shrink: 0;
-      margin-top: 4px;
-    }
-    .s3-divider { border: none; border-top: .5px solid #2D4A44; margin: 24px 0; }
-    .s3-mid { font-size: 16px; color: #9BB5AE; line-height: 1.8; margin-bottom: 20px; }
-    .s3-close { font-size: 17px; color: #F7F4EF; font-weight: 500; line-height: 1.6; }
-    .s3-close span { color: var(--gold); }
+    /* ── S4 CTA ── */
+    .s4 { background: linear-gradient(150deg, #F7F4FF 0%, #EEE8FF 100%); text-align: center; padding: 120px 64px 48px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
+    .s4-inner { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+    .s4-h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 48px); font-weight: 500; color: var(--text); line-height: 1.25; margin-bottom: 20px; }
+    .s4-sub { font-size: 17px; color: var(--text-2); line-height: 1.9; margin-bottom: 56px; }
+    .qr-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-bottom: 32px; }
+    .qr-caption-top { font-size: 15px; color: var(--text-3); }
+    .qr-box { width: 152px; height: 152px; background: #fff; border-radius: 16px; padding: 12px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+    .qr-box img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+    .qr-closing { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--text); }
+    .s4-fine { font-size: 13px; color: var(--text-3); }
 
-    /* S4 */
-    .s4-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 28px; line-height: 1.3; }
-    .s4-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      background: var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-    .s4-row {
-      background: var(--bg);
-      padding: 20px 24px;
-      display: flex;
-      gap: 20px;
-      align-items: flex-start;
-    }
-    .s4-icon { font-size: 20px; color: var(--lt); flex-shrink: 0; margin-top: 1px; }
-    .s4-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-    .s4-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
+    .s4-footer { width: 100%; display: flex; justify-content: space-between; align-items: center; padding-top: 48px; border-top: 1px solid rgba(109,74,255,0.15); margin-top: auto; }
+    .s4-footer-text { font-size: 12px; color: var(--text-3); }
 
-    /* S5 */
-    .s5-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 28px; }
-    .s5-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-    .s5-item { background: var(--bg); padding: 24px 28px; }
-    .s5-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-bottom: 12px; }
-    .s5-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
-    .s5-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
-
-    /* S6 */
-    .s6-head { font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 36px; }
-    .s6-steps {
-      display: flex;
-      gap: 0;
-      position: relative;
-      margin-bottom: 48px;
-    }
-    .s6-steps::before {
-      content: '';
-      position: absolute;
-      top: 22px; left: 22px; right: 22px;
-      height: .5px;
-      background: var(--border);
-      z-index: 0;
-    }
-    .s6-step { flex: 1; text-align: center; position: relative; z-index: 1; }
-    .s6-dot-wrap {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: .5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 12px;
-      font-size: 17px;
-      color: var(--mid);
-    }
-    .s6-label { font-size: 13px; font-weight: 500; color: var(--text); }
-    .s6-closing {
-      border-top: .5px solid var(--border);
-      padding-top: 32px;
-      text-align: center;
-    }
-    .s6-closing-text {
-      font-size: 20px;
-      font-weight: 500;
-      color: var(--gold);
-      letter-spacing: .02em;
-    }
-
-    /* S7 */
-    .s7 {
-      background: var(--dk);
-      border-radius: var(--radius-lg);
-      padding: 80px 52px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .s7-orb1 { top: -70px; left: -70px; width: 240px; height: 240px; border-width: 44px; opacity: .38; }
-    .s7-orb2 { bottom: -80px; right: -50px; width: 180px; height: 180px; border-width: 32px; opacity: .22; }
-    .s7-pre { font-size: 17px; color: var(--muted); line-height: 2; margin-bottom: 16px; position: relative; z-index: 1; }
-    .s7-invite { font-size: 22px; font-weight: 500; color: #F7F4EF; line-height: 1.5; margin-bottom: 40px; position: relative; z-index: 1; }
-    .s7-invite span { color: var(--gold); }
-    .s7-btn-wrap { position: relative; z-index: 1; margin-bottom: 14px; }
-    .s7-sub { font-size: 12px; color: #4A7A72; position: relative; z-index: 1; letter-spacing: .03em; }
-    .s7-brand { margin-top: 52px; position: relative; z-index: 1; }
-    .s7-brand-name { font-size: 20px; font-weight: 500; color: var(--gold); margin-bottom: 6px; }
-    .s7-brand-slogan { font-size: 12px; color: #4A7A72; letter-spacing: .05em; }
-
-    /* 手机响应式 */
-    @media (max-width: 600px) {
-      .wrapper { padding: 12px 12px 48px; gap: 2px; }
-      .s1 { padding: 52px 28px 48px; min-height: 340px; }
-      .s1-h1 { font-size: 36px; }
-      .sec { padding: 40px 28px; }
-      .s3-wrap { padding: 32px 28px; }
-      .s5-grid { grid-template-columns: 1fr; }
-      .s6-steps { flex-direction: column; gap: 20px; align-items: flex-start; padding-left: 20px; }
-      .s6-steps::before { display: none; }
-      .s6-step { display: flex; align-items: center; gap: 16px; text-align: left; }
-      .s6-dot-wrap { margin: 0; flex-shrink: 0; }
-      .s6-closing-text { font-size: 17px; }
-      .s7 { padding: 56px 28px; }
-      .s7-invite { font-size: 18px; }
-      .btn-primary-lg { font-size: 14px !important; padding: 13px 28px !important; }
+    /* ── Responsive ── */
+    @media (max-width: 768px) { .nav-links, .nav-btn { display: none; } .hamburger { display: flex; } }
+    @media (max-width: 640px) {
+      .hero { padding: 80px 24px 80px; }
+      .s2, .s3, .s4 { padding: 72px 24px; min-height: auto; }
+      .s2-roles { grid-template-columns: 1fr; gap: 40px; }
+      .s3-inner { padding-left: 0; }
+      .footer { padding: 24px; flex-direction: column; gap: 8px; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
 
-    <!-- S1 Hero -->
-    <div class="s1">
-      <div class="orb orb1"></div>
-      <div class="orb orb2"></div>
-      <div class="s1-h1">你，<br>值得长期回报。</div>
-      <div class="s1-plan">回客创始伙伴计划</div>
-      <div class="s1-who">
-        <div class="s1-who-line">面向美业顾问、培训老师、</div>
-        <div class="s1-who-line">服务商与门店经营者开放。</div>
-      </div>
-      <a href="#apply" class="btn-primary">
-        <i class="ti ti-arrow-right" aria-hidden="true"></i>
-        申请成为创始伙伴
-      </a>
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/"><img src="/images/logo.png" alt="回客" style="height:32px;width:auto;display:block;"></a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">首页</a>
+      <a href="/product" class="nav-link">产品</a>
+      <a href="/pricing" class="nav-link">价格</a>
+      <a href="/partner" class="nav-link active">创始伙伴</a>
+      <a href="/about" class="nav-link">关于回客</a>
     </div>
-
-    <!-- S2 -->
-    <div class="sec">
-      <div class="s2-head">如果你深耕美业，<br>并拥有：</div>
-      <div class="s2-group">
-        <div class="s2-item lit">经验。</div>
-        <div class="s2-item">口碑。</div>
-        <div class="s2-item">影响力。</div>
-        <div class="s2-item">信任。</div>
-      </div>
-      <div class="s2-close">
-        这些用时间换来的价值，<br>
-        <span>值得获得长期回报。</span>
-      </div>
-    </div>
-
-    <!-- S3 -->
-    <div class="sec">
-      <div class="s3-wrap">
-        <div class="s3-head">很多价值，<br>没有被留下。</div>
-        <div class="s3-items">
-          <div class="s3-item"><div class="s3-dot"></div>每一次建议。</div>
-          <div class="s3-item"><div class="s3-dot"></div>每一次推荐。</div>
-          <div class="s3-item"><div class="s3-dot"></div>每一次分享。</div>
-          <div class="s3-item"><div class="s3-dot"></div>每一次连接。</div>
-        </div>
-        <div class="s3-divider"></div>
-        <div class="s3-mid">都创造了价值。<br>回报却停在了那一刻。</div>
-        <div class="s3-close">
-          回客希望改变这件事。<br>
-          <span>让每一份价值，都获得应有的长期回报。</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- S4 -->
-    <div class="sec">
-      <div class="s4-head">成为创始伙伴，<br>你将获得：</div>
-      <div class="s4-list">
-        <div class="s4-row">
-          <div class="s4-icon"><i class="ti ti-certificate" aria-hidden="true"></i></div>
-          <div>
-            <div class="s4-title">成为第一批共建者</div>
-            <div class="s4-desc">参与回客生态建设，与产品共同成长。</div>
-          </div>
-        </div>
-        <div class="s4-row">
-          <div class="s4-icon"><i class="ti ti-layout-kanban" aria-hidden="true"></i></div>
-          <div>
-            <div class="s4-title">参与产品未来</div>
-            <div class="s4-desc">你的行业经验，将直接影响产品方向。</div>
-          </div>
-        </div>
-        <div class="s4-row">
-          <div class="s4-icon"><i class="ti ti-users-group" aria-hidden="true"></i></div>
-          <div>
-            <div class="s4-title">获得总部支持</div>
-            <div class="s4-desc">培训、案例、资料与伙伴资源支持。</div>
-          </div>
-        </div>
-        <div class="s4-row">
-          <div class="s4-icon"><i class="ti ti-flask" aria-hidden="true"></i></div>
-          <div>
-            <div class="s4-title">优先体验新能力</div>
-            <div class="s4-desc">优先使用新功能、新工具与新计划。</div>
-          </div>
-        </div>
-        <div class="s4-row">
-          <div class="s4-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
-          <div>
-            <div class="s4-title">沉淀长期价值</div>
-            <div class="s4-desc">让经验、口碑与影响力持续积累。</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- S5 -->
-    <div class="sec">
-      <div class="s5-head">我们正在寻找：</div>
-      <div class="s5-grid">
-        <div class="s5-item">
-          <div class="s5-dot"></div>
-          <div class="s5-title">长期主义者</div>
-          <div class="s5-desc">相信关系值得被长期经营。</div>
-        </div>
-        <div class="s5-item">
-          <div class="s5-dot"></div>
-          <div class="s5-title">客户成功导向者</div>
-          <div class="s5-desc">愿意帮助客户获得结果。</div>
-        </div>
-        <div class="s5-item">
-          <div class="s5-dot"></div>
-          <div class="s5-title">专业可靠的人</div>
-          <div class="s5-desc">拥有行业口碑与职业底线。</div>
-        </div>
-        <div class="s5-item">
-          <div class="s5-dot"></div>
-          <div class="s5-title">开放共创的人</div>
-          <div class="s5-desc">愿意一起建设更好的产品。</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- S6 -->
-    <div class="sec">
-      <div class="s6-head">申请流程</div>
-      <div class="s6-steps">
-        <div class="s6-step">
-          <div class="s6-dot-wrap"><i class="ti ti-send" aria-hidden="true"></i></div>
-          <div class="s6-label">提交申请</div>
-        </div>
-        <div class="s6-step">
-          <div class="s6-dot-wrap"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
-          <div class="s6-label">初步沟通</div>
-        </div>
-        <div class="s6-step">
-          <div class="s6-dot-wrap"><i class="ti ti-check" aria-hidden="true"></i></div>
-          <div class="s6-label">伙伴认证</div>
-        </div>
-        <div class="s6-step">
-          <div class="s6-dot-wrap"><i class="ti ti-certificate" aria-hidden="true"></i></div>
-          <div class="s6-label">加入计划</div>
-        </div>
-      </div>
-      <div class="s6-closing">
-        <div class="s6-closing-text">只筛选真正的同行者。</div>
-      </div>
-    </div>
-
-    <!-- S7 CTA -->
-    <div class="s7" id="apply">
-      <div class="orb s7-orb1"></div>
-      <div class="orb s7-orb2"></div>
-      <div class="s7-pre">
-        如果你深耕美业，<br>
-        并相信信任比流量更重要。
-      </div>
-      <div class="s7-invite">欢迎成为<span>回客</span>创始伙伴。</div>
-      <div class="s7-btn-wrap">
-        <a href="https://mcnmm7o8z4hq.feishu.cn/share/base/form/shrcnuR2o4V9ZPTktpuPyfJ4cic" class="btn-primary btn-primary-lg">
-          立即申请成为创始伙伴
-        </a>
-      </div>
-      <div class="s7-sub">申请免费 · 无加盟费 · 24小时内回复</div>
-      <div class="s7-brand">
-        <div class="s7-brand-name">回客</div>
-        <div class="s7-brand-slogan">让每一段关系都不被遗忘。</div>
-      </div>
-    </div>
-
+    <a href="/start" class="nav-btn">开始体验回客</a>
+    <button class="hamburger" id="hamburger" aria-label="菜单"><span></span><span></span><span></span></button>
   </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/" class="mobile-link">首页</a>
+  <a href="/product" class="mobile-link">产品</a>
+  <a href="/pricing" class="mobile-link">价格</a>
+  <a href="/partner" class="mobile-link">创始伙伴</a>
+  <a href="/about" class="mobile-link">关于回客</a>
+  <a href="/start" class="mobile-link">开始体验回客</a>
+</div>
+
+<!-- S1 Hero -->
+<section class="hero">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <h1 class="hero-h1">让每一段关系<br>都成为长期价值</h1>
+  <p class="hero-sub">回客正在寻找相信长期关系价值的人，<br>与经营者一起建立客户关系资产。</p>
+  <a href="#apply" class="hero-cta-link">了解创始伙伴计划 →</a>
+</section>
+
+<!-- S2 Partner 定位 -->
+<section class="s2">
+  <div class="s2-inner">
+    <h2 class="s2-h2">Partner，是客户关系资产的建设者</h2>
+    <div class="s2-roles">
+      <div class="s2-role">
+        <div class="s2-role-dot">1</div>
+        <div class="s2-role-name">理解行业</div>
+        <div class="s2-role-desc">理解经营者真实处境，<br>发现关系经营需求。</div>
+      </div>
+      <div class="s2-role">
+        <div class="s2-role-dot">2</div>
+        <div class="s2-role-name">连接经营者</div>
+        <div class="s2-role-desc">帮助门店建立客户关系资产，<br>陪伴经营者持续成长。</div>
+      </div>
+      <div class="s2-role">
+        <div class="s2-role-dot">3</div>
+        <div class="s2-role-name">共同成长</div>
+        <div class="s2-role-desc">与回客一起，<br>持续积累经验。</div>
+      </div>
+    </div>
+    <div class="s2-closing">
+      <p class="s2-closing-text">Partner 不是渠道，<br>是<span class="s2-closing-em">与经营者共同成长的人</span>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- S3 创始伙伴价值 -->
+<section class="s3">
+  <div class="s3-inner">
+    <h2 class="s3-h2">共建长期价值</h2>
+    <div class="s3-values">
+      <div class="s3-value">
+        <div class="s3-value-anchor">
+          <div class="s3-value-dot"></div>
+          <div class="s3-value-line"></div>
+        </div>
+        <div>
+          <div class="s3-value-num">01</div>
+          <div class="s3-value-name">成为创始伙伴</div>
+          <div class="s3-value-desc">第一批伙伴身份，随时间积累。</div>
+        </div>
+      </div>
+      <div class="s3-value">
+        <div class="s3-value-anchor">
+          <div class="s3-value-dot"></div>
+          <div class="s3-value-line"></div>
+        </div>
+        <div>
+          <div class="s3-value-num">02</div>
+          <div class="s3-value-name">共享关系成果</div>
+          <div class="s3-value-desc">关系创造的价值，与伙伴共同拥有。</div>
+        </div>
+      </div>
+      <div class="s3-value">
+        <div class="s3-value-anchor">
+          <div class="s3-value-dot"></div>
+        </div>
+        <div>
+          <div class="s3-value-num">03</div>
+          <div class="s3-value-name">持续共创</div>
+          <div class="s3-value-desc">一起探索客户关系经营的新方式。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 CTA -->
+<section class="s4" id="apply">
+  <div class="s4-inner">
+    <h2 class="s4-h2">如果你相信<br>信任比流量更重要</h2>
+    <div class="qr-wrap">
+      <div class="qr-caption-top">与我们聊聊你的想法</div>
+      <div class="qr-box">
+        <img src="/images/qrcode.png" alt="扫码添加企业微信">
+      </div>
+      <div class="qr-closing">期待真正的同行者</div>
+    </div>
+    <p class="s4-fine">申请免费 · 无加盟费 · 无区域独占</p>
+    <div class="s4-footer">
+      <span class="s4-footer-text">© 2026 上海神工天降智能科技有限公司</span>
+      <span class="s4-footer-text">回客 Relationship OS</span>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobile-menu');
+  if (h && m) {
+    h.addEventListener('click', () => { h.classList.toggle('open'); m.classList.toggle('open'); });
+    m.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => { h.classList.remove('open'); m.classList.remove('open'); }));
+  }
+</script>
 </body>
 </html>
