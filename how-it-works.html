@@ -1,609 +1,542 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工作方式 - 回客 Relationship OS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #6D4AFF;
-            --secondary: #FF6EC7;
-            --bg: #FFFFFF;
-            --text-main: #111827;
-            --text-muted: #6B7280;
-            --border: #E5E7EB;
-            --bg-light: #FAFAFA;
-        }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); -webkit-font-smoothing: antialiased; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Noto Serif SC', serif; font-weight: 600; letter-spacing: -0.02em; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作方式 - 回客 Relationship OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --purple:#6D4AFF;--purple-dim:rgba(109,74,255,0.1);--purple-pale:#F0EBFF;
+  --text:#111827;--text-2:#4B5563;--text-3:#9CA3AF;
+  --border:#E5E7EB;--border-2:rgba(229,231,235,0.6);
+  --bg:#FFFFFF;--bg-off:#FAFAFC;
+  --serif:'Noto Serif SC',serif;--sans:'Inter',-apple-system,'PingFang SC',sans-serif;
+  --ease:0.2s ease;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0; height: 80px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.5); z-index: 100;
-        }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; height: 100%; }
-        .logo-area { display: flex; flex-direction: column; text-decoration: none; }
-        .logo-text { font-size: 22px; font-weight: 700; color: var(--text-main); line-height: 1; }
-        .logo-sub { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; font-family: 'Inter', sans-serif; font-weight: 500; }
-        .nav-links { display: flex; align-items: center; gap: 32px; }
-        .nav-link { font-size: 14px; font-weight: 500; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-        .nav-link:hover { color: var(--text-main); }
-        .nav-link.active { color: var(--primary); font-weight: 600; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer; text-decoration: none; }
-        .btn-primary { background: var(--primary); color: #fff; border: 1px solid var(--primary); }
-        .btn-primary:hover { background: #5A3DD1; }
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-2);z-index:100;}
+.nav-inner{max-width:1120px;margin:0 auto;padding:0 40px;height:100%;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo img{height:28px;width:auto;display:block;}
+.nav-links{display:flex;gap:28px;}
+.nav-link{font-size:14px;color:var(--text-2);transition:color var(--ease);}
+.nav-link:hover,.nav-link.active{color:var(--text);}
+.nav-cta{font-size:13px;font-weight:500;background:var(--purple);color:#fff;padding:8px 20px;border-radius:100px;transition:opacity var(--ease);}
+.nav-cta:hover{opacity:0.88;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;}
+.hamburger span{display:block;width:20px;height:1.5px;background:var(--text);border-radius:2px;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(255,255,255,.97);flex-direction:column;z-index:99;border-bottom:1px solid var(--border);padding:8px 40px 20px;}
+.mobile-menu.open{display:flex;}
+.mobile-link{font-size:15px;color:var(--text-2);padding:14px 0;border-bottom:1px solid var(--border);display:block;}
+.mobile-link:last-child{border-bottom:none;}
 
-        /* Hero */
-        .page-hero {
-            padding-top: 80px;
-            min-height: 44vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .page-hero-inner { max-width: 720px; }
-        .page-meta { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 20px; font-family: 'Inter', sans-serif; }
-        .page-title { font-size: 64px; font-weight: 700; color: var(--text-main); line-height: 1.2; margin-bottom: 28px; letter-spacing: -0.01em; }
-        .page-subtitle { font-size: 17px; color: var(--text-muted); line-height: 1.8; max-width: 540px; margin: 0 auto; }
+/* Hero */
+.hero{padding:160px 64px 96px;text-align:center;}
+.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:0.12em;color:var(--purple);text-transform:uppercase;margin-bottom:24px;}
+.hero-h1{font-family:var(--serif);font-size:clamp(36px,5vw,56px);font-weight:700;color:var(--text);line-height:1.15;margin-bottom:20px;letter-spacing:-0.01em;}
+.hero-sub{font-size:17px;color:var(--text-2);line-height:1.8;max-width:480px;margin:0 auto;}
 
-        /* Steps Layout */
-        .steps-wrapper { padding: 0 0 64px 0; }
+/* Section 公共 */
+.section{padding:120px 64px;}
+.section-inner{max-width:1000px;margin:0 auto;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:0.14em;color:var(--text-3);text-transform:uppercase;margin-bottom:20px;}
+.section-title{font-family:var(--serif);font-size:clamp(32px,4vw,48px);font-weight:700;color:var(--text);line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px;}
+.section-desc{font-size:16px;color:var(--text-2);line-height:1.8;max-width:420px;}
 
-        .step-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-            padding: 96px 0;
-            border-bottom: 1px solid rgba(229, 231, 235, 0.4);
-        }
-        .step-section:last-child { border-bottom: none; }
-        .step-section.reverse { direction: rtl; }
-        .step-section.reverse > * { direction: ltr; }
+/* 左文右卡布局 */
+.split{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:center;}
+.split.reverse{grid-template-columns:1.4fr 1fr;}
+.split.reverse .split-text{order:2;}
+.split.reverse .split-visual{order:1;}
 
-        .step-meta { font-size: 12px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 14px; font-family: 'Inter', sans-serif; }
-        .step-title { font-size: 48px; color: var(--text-main); margin-bottom: 16px; font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; font-family: 'Noto Serif SC', serif; }
-        .step-desc { font-size: 15px; color: var(--text-muted); line-height: 1.75; margin-top: 4px; }
-        .step-desc p { margin-bottom: 12px; }
-        .step-desc p:last-child { margin-bottom: 0; }
+/* 产品卡片基础 */
+.ui-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.04);transition:box-shadow 0.3s ease;}
+.ui-card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.ui-dots{display:flex;gap:5px;}
+.ui-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.ui-card-title{font-size:12px;font-weight:500;color:var(--text-3);margin-left:4px;}
 
-        /* UI Cards */
-        .ui-card {
-            background: #FFFFFF;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03), 0 1px 3px rgba(0,0,0,0.02);
-        }
-        .ui-card-header {
-            font-size: 13px; font-weight: 700; color: var(--text-main);
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 14px; margin-bottom: 20px;
-            text-transform: uppercase; letter-spacing: 0.06em; font-family: 'Inter', sans-serif;
-        }
-        .ui-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 13px 0; border-bottom: 1px solid #F3F4F6; font-size: 14px;
-        }
-        .ui-row:last-child { border-bottom: none; padding-bottom: 0; }
-        .ui-tag {
-            font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px;
-        }
+/* ── S1 客户资产 卡片 ── */
+.profile-card .ui-card-body{padding:20px;}
+.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--border);}
+.profile-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#E0D9FF,#C4B5FF);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;font-weight:600;color:var(--purple);flex-shrink:0;}
+.profile-name{font-size:16px;font-weight:600;color:var(--text);}
+.profile-since{font-size:12px;color:var(--text-3);margin-top:2px;}
+.profile-stage{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--purple);background:var(--purple-dim);padding:4px 12px;border-radius:20px;border:1.5px solid rgba(109,74,255,0.25);}
+.profile-stage-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);}
+.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.profile-field{background:var(--bg-off);border-radius:10px;padding:12px 14px;}
+.profile-field-label{font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:4px;}
+.profile-field-value{font-size:15px;font-weight:600;color:var(--text);}
+.profile-field-value.accent{color:var(--purple);font-weight:700;}
+.profile-prefs{background:var(--bg-off);border-radius:10px;padding:12px 14px;margin-bottom:16px;}
+.profile-prefs-label{font-size:10px;font-weight:600;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:8px;}
+.pref-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.pref-tag{font-size:12px;color:var(--text-2);background:#fff;border:1px solid var(--border);padding:3px 10px;border-radius:20px;}
+.profile-last{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(109,74,255,0.04);border-radius:10px;border:1px solid rgba(109,74,255,0.1);}
+.profile-last-label{font-size:11px;color:var(--text-3);}
+.profile-last-value{font-size:12px;font-weight:500;color:var(--text-2);}
+.profile-last-days{font-size:11px;font-weight:600;color:var(--purple);}
 
-        /* Step 1: Import */
-        .import-visual {
-            background: var(--bg-light);
-            border: 1px dashed #D1D5DB;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-        }
-        .import-icon { font-size: 40px; margin-bottom: 16px; }
-        .import-label { font-size: 15px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
-        .import-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
-        .import-formats { display: flex; gap: 8px; justify-content: center; }
-        .import-badge { background: #FFFFFF; border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--text-main); font-family: 'Inter', sans-serif; }
-        .import-progress { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
-        .import-progress-bar-bg { height: 4px; background: #F3F4F6; border-radius: 2px; overflow: hidden; }
-        .import-progress-bar { height: 100%; width: 72%; background: var(--primary); border-radius: 2px; }
-        .import-progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+/* ── S2 关系理解 卡片 ── */
+.insight-card .ui-card-body{padding:20px;}
+.insight-client{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.insight-client-left{display:flex;align-items:center;gap:12px;}
+.insight-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#E0D9FF,#C4B5FF);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:15px;font-weight:600;color:var(--purple);}
+.insight-name{font-size:15px;font-weight:600;color:var(--text);}
+.insight-status{font-size:11px;color:var(--text-3);margin-top:2px;}
+.insight-badge{font-size:11px;font-weight:600;color:#059669;background:#ECFDF5;padding:4px 10px;border-radius:20px;border:1px solid #A7F3D0;}
+.insight-section-title{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--text-3);text-transform:uppercase;margin-bottom:10px;}
+.insight-facts{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
+.insight-fact{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-2);}
+.insight-fact-dot{width:4px;height:4px;border-radius:50%;background:var(--purple);flex-shrink:0;}
+.insight-summary{background:rgba(109,74,255,0.05);border:1px solid rgba(109,74,255,0.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.insight-summary-label{font-size:10px;font-weight:700;letter-spacing:0.1em;color:var(--purple);text-transform:uppercase;margin-bottom:6px;}
+.insight-summary-text{font-size:13px;color:var(--text-2);line-height:1.65;}
+.insight-stage{background:var(--bg-off);border-radius:10px;padding:12px 14px;}
+.stage-track{display:flex;gap:4px;margin-top:8px;}
+.stage-seg{flex:1;height:6px;border-radius:3px;background:var(--border);}
+.stage-seg.on{background:var(--purple);}
+.stage-seg.partial{background:rgba(109,74,255,0.35);}
+.stage-labels{display:flex;justify-content:space-between;margin-top:6px;}
+.stage-label{font-size:10px;color:var(--text-3);}
+.stage-label.active{color:var(--purple);font-weight:600;}
 
-        /* Step 2: Relationship */
-        .relationship-card {
-            background: #FFFFFF;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-        }
-        .rel-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 14px;
-        }
-        .rel-avatar {
-            width: 42px; height: 42px; border-radius: 50%;
-            background: var(--primary);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; font-weight: 700; color: #FFFFFF;
-            font-family: 'Noto Serif SC', serif;
-            flex-shrink: 0;
-        }
-        .rel-name { font-size: 16px; font-weight: 600; color: var(--text-main); }
-        .rel-stage { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-        .rel-stage-badge {
-            margin-left: auto;
-            font-size: 11px; font-weight: 600;
-            background: rgba(109,74,255,0.08);
-            color: var(--primary);
-            padding: 4px 10px; border-radius: 20px;
-            white-space: nowrap;
-        }
-        .rel-body { padding: 20px 24px; }
-        .rel-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid #F9FAFB; font-size: 13px; }
-        .rel-row:last-child { border-bottom: none; }
-        .rel-label { color: var(--text-muted); }
-        .rel-value { font-weight: 500; color: var(--text-main); }
-        .rel-stages {
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-            background: rgba(109,74,255,0.03);
-        }
-        .rel-stages-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; font-family: 'Inter', sans-serif; }
-        .rel-stages-track { display: flex; gap: 4px; align-items: center; }
-        .stage-dot { height: 8px; border-radius: 4px; }
-        .stage-dot.done { background: var(--text-main); flex: 1; }
-        .stage-dot.active { background: var(--primary); flex: 1; box-shadow: 0 0 8px rgba(109,74,255,0.4); }
-        .stage-dot.future { background: #E5E7EB; flex: 1; }
-        .rel-stages-labels { display: flex; justify-content: space-between; margin-top: 8px; }
-        .stage-label-text { font-size: 10px; color: var(--text-muted); font-family: 'Inter', sans-serif; }
-        .stage-label-text.active-label { color: var(--primary); font-weight: 600; }
+/* ── S3 今日行动 卡片 ── */
+.today-card .ui-card-body{padding:0;}
+.today-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.today-date{font-size:12px;font-weight:500;color:var(--text-3);}
+.today-count{font-size:12px;font-weight:600;color:var(--purple);background:var(--purple-dim);padding:2px 8px;border-radius:20px;}
+.today-item{padding:16px 20px;border-bottom:1px solid var(--border-2);transition:background var(--ease);}
+.today-item:last-child{border-bottom:none;}
+.today-item:hover{background:var(--bg-off);}
+.today-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.today-name{font-size:14px;font-weight:600;color:var(--text);}
+.today-badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.badge-warm{color:#D97706;background:#FFFBEB;border:1px solid #FDE68A;}
+.badge-bday{color:#7C3AED;background:#F5F3FF;border:1px solid #DDD6FE;}
+.badge-new{color:#059669;background:#ECFDF5;border:1px solid #A7F3D0;}
+.today-reason{font-size:12px;color:var(--text-3);margin-bottom:8px;line-height:1.5;}
+.today-action{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:var(--purple);}
+.today-action-arrow{font-size:10px;}
 
-        /* Step 3: Decision */
-        .decision-card {
-            background: #FFFFFF;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-        }
-        .decision-header {
-            padding: 16px 24px;
-            background: var(--bg-light);
-            border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .decision-date { font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .decision-count { font-size: 12px; color: var(--text-muted); }
-        .decision-item {
-            padding: 20px 24px;
-            border-bottom: 1px solid #F3F4F6;
-        }
-        .decision-item:last-child { border-bottom: none; }
-        .decision-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .decision-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
-        .decision-badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
-        .badge-urgent { background: #FEF3C7; color: #D97706; }
-        .badge-moment { background: #EEF2FF; color: var(--primary); }
-        .badge-birthday { background: #FDF2F8; color: #9D174D; }
-        .decision-reason { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-        .decision-action { margin-top: 10px; font-size: 12px; font-weight: 600; color: var(--primary); }
+/* ── S4 关系积累 卡片 ── */
+.loop-card .ui-card-body{padding:20px;}
+.loop-client-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.loop-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E0D9FF,#C4B5FF);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;font-weight:600;color:var(--purple);}
+.loop-client-name{font-size:14px;font-weight:600;color:var(--text);}
+.loop-timeline{display:flex;flex-direction:column;gap:0;}
+.loop-step{display:flex;gap:14px;align-items:flex-start;}
+.loop-step-line{display:flex;flex-direction:column;align-items:center;padding-top:3px;}
+.loop-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.loop-dot.done{background:var(--text-3);}
+.loop-dot.active{background:var(--purple);box-shadow:0 0 0 3px rgba(109,74,255,0.15);}
+.loop-dot.next{background:#fff;border:2px solid var(--border);}
+.loop-connector{width:1px;flex:1;min-height:20px;background:var(--border);margin:4px 0;}
+.loop-content{padding-bottom:16px;flex:1;}
+.loop-step:last-child .loop-content{padding-bottom:0;}
+.loop-step-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--text-3);text-transform:uppercase;margin-bottom:3px;}
+.loop-step-text{font-size:13px;color:var(--text-2);line-height:1.55;}
+.loop-step-text.highlight{color:var(--purple);font-weight:500;}
+.loop-update{margin-top:14px;padding:12px 14px;background:rgba(109,74,255,0.07);border-radius:10px;border:1.5px solid rgba(109,74,255,0.18);}
+.loop-update-label{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(--purple);text-transform:uppercase;margin-bottom:4px;}
+.loop-update-text{font-size:12px;color:var(--text-2);}
 
-        /* Step 4: Feedback loop */
-        .loop-card {
-            background: #FFFFFF;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.03);
-        }
-        .loop-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-        .loop-header-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
-        .loop-header-sub { font-size: 12px; color: var(--text-muted); }
-        .loop-timeline { padding: 20px 24px; }
-        .loop-event { display: flex; gap: 14px; padding: 10px 0; position: relative; }
-        .loop-event-line {
-            display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
-        }
-        .loop-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
-        .loop-dot.done { background: var(--primary); }
-        .loop-dot.active { background: var(--primary); box-shadow: 0 0 8px rgba(109,74,255,0.4); }
-        .loop-line-seg { width: 1px; flex: 1; background: var(--border); margin: 4px 0; min-height: 20px; }
-        .loop-event-content { flex: 1; padding-bottom: 8px; }
-        .loop-event-title { font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .loop-event-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
-        .loop-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            background: rgba(109,74,255,0.03);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .loop-footer-icon { font-size: 16px; }
-        .loop-footer-text { font-size: 12px; color: var(--primary); font-weight: 500; }
+/* CTA */
+.cta-section{padding:100px 64px;text-align:center;border-top:1px solid var(--border);}
+.cta-title{font-family:var(--serif);font-size:clamp(28px,3.5vw,40px);font-weight:600;color:var(--text);margin-bottom:32px;}
+.cta-btn{display:inline-block;background:var(--purple);color:#fff;font-size:15px;font-weight:500;padding:14px 36px;border-radius:100px;transition:opacity var(--ease);}
+.cta-btn:hover{opacity:0.88;}
 
-        /* Terminal Footer */
-        .terminal-block {
-            width: 100%; border-top: 1px solid rgba(229, 231, 235, 0.6);
-            background-color: var(--bg); padding-top: 72px; padding-bottom: 72px;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-        }
-        .terminal-line { width: 1px; height: 160px; background: linear-gradient(to bottom, rgba(229,231,235,0.8) 0%, var(--primary) 100%); }
-        .terminal-dot-center { width: 16px; height: 16px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 24px rgba(109, 74, 255, 0.35); margin-top: -2px; margin-bottom: 32px; }
-        .terminal-title { font-family: 'Noto Serif SC', serif; font-size: 64px; font-weight: 700; color: var(--text-main); line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.02em; }
-        .terminal-slogan { font-family: 'Noto Serif SC', serif; font-size: 18px; font-weight: 400; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 64px; }
-        .terminal-card-box { background: #FFFFFF; border: 1px solid var(--border); border-radius: 16px; padding: 48px 64px; width: 100%; max-width: 480px; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; align-items: center; }
-        .card-main-title { font-family: 'Noto Serif SC', serif; font-size: 32px; font-weight: 700; color: var(--text-main); margin-bottom: 8px; line-height: 1.4; }
-        .card-secondary-title { font-family: 'Noto Serif SC', serif; font-size: 24px; font-weight: 500; color: #374151; margin-bottom: 36px; line-height: 1.4; }
-        .card-btn { display: inline-block; width: 100%; padding: 14px; background: var(--primary); color: #FFFFFF; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.2s; text-align: center; text-decoration: none; }
-        .card-btn:hover { background: #5A3DD1; }
-        .card-btn-outline { background: transparent; color: var(--text-main); border: 1.5px solid var(--border); }
-        .card-btn-outline:hover { background: var(--bg-light); border-color: var(--text-main); }
+/* Footer */
+footer{padding:24px 64px;border-top:1px solid var(--border);display:flex;justify-content:center;}
+.footer-copy{font-size:12px;color:var(--text-3);}
 
-        /* 双入口 CTA */
-        .dual-cta-block { width: 100%; display: flex; flex-direction: column; gap: 0; margin-top: 8px; }
-        .dual-cta-item { display: flex; flex-direction: column; align-items: center; padding: 28px 0; }
-        .dual-cta-item:first-child { padding-top: 0; }
-        .dual-cta-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
-        .dual-cta-desc { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; text-align: center; }
-        .dual-cta-divider { width: 100%; border: none; border-top: 1px solid var(--border); margin: 0; }
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.anim-fadeup{opacity:0;animation:fadeUp 0.6s ease forwards;}
+.anim-delay-1{animation-delay:0.1s;}
+.anim-delay-2{animation-delay:0.2s;}
+.anim-delay-3{animation-delay:0.3s;}
+.anim-delay-4{animation-delay:0.4s;}
 
-        /* Footer */
-        footer { padding: 24px 0; background: #FFFFFF; text-align: center; }
-        .footer-container { display: flex; justify-content: center; align-items: center; width: 100%; text-align: center; }
-        .footer-left-group { display: flex; align-items: center; gap: 20px; }
-        .footer-brand { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; color: var(--text-main); letter-spacing: -0.01em; }
-        .footer-divider { width: 1px; height: 14px; background-color: #D1D5DB; }
-        .footer-slogan-single { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 400; color: #4B5563; letter-spacing: 0.05em; }
-        .footer-right-copyright { font-family: 'Inter', sans-serif; font-size: 12px; color: #9CA3AF; letter-spacing: 0.02em; }
+/* 数字跳动 */
+@keyframes countUp{from{opacity:0.3;}to{opacity:1;}}
+.count-anim{animation:countUp 0.8s ease forwards;}
 
-        /* 汉堡菜单 */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 4px;
-            background: none;
-            border: none;
-        }
-        .hamburger span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--text-main);
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .hamburger.open span:nth-child(2) { opacity: 0; }
-        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* Intersection Observer 触发 */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.reveal-card{opacity:0;transform:translateY(12px) scale(0.99);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal-card.visible{opacity:1;transform:none;}
 
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 80px;
-            left: 0; right: 0;
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 16px 24px 24px;
-            z-index: 99;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .mobile-menu.open { display: flex; }
-        .mobile-menu-link {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-            display: block;
-        }
-        .mobile-menu-link:last-child { border-bottom: none; }
-        .mobile-menu-link.active { color: var(--primary); font-weight: 600; }
+/* 数字闪入 */
+@keyframes numIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.num-anim{opacity:0;}
+.num-anim.visible{animation:numIn 0.5s ease forwards;}
+.num-anim.visible.d1{animation-delay:0.1s;}
+.num-anim.visible.d2{animation-delay:0.2s;}
+.num-anim.visible.d3{animation-delay:0.3s;}
+.num-anim.visible.d4{animation-delay:0.4s;}
 
-        @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .nav-links { display: none; }
-            .hamburger { display: flex; }
-        }
-            .page-title { font-size: 36px; }
-            .page-subtitle { font-size: 15px; }
-            .step-section { grid-template-columns: 1fr; gap: 40px; padding: 72px 0; }
-            .step-section.reverse { direction: ltr; }
-            .step-title { font-size: 26px; }
-            .step-desc { font-size: 15px; }
-            .terminal-title { font-size: 48px; }
-            .terminal-card-box { padding: 48px 24px; }
-            .card-main-title { font-size: 24px; }
-            footer { padding: 80px 0 40px 0; }
-            .footer-container { flex-direction: column; align-items: center; gap: 20px; text-align: center; }
-            .footer-left-group { flex-direction: column; gap: 8px; }
-            .footer-divider { display: none; }
-        }
-    </style>
+/* 时间线逐步显现 */
+@keyframes stepIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
+.step-anim{opacity:0;}
+.step-anim.run{animation:stepIn 0.4s ease forwards;}
+.step-anim.run.s1{animation-delay:0s;}
+.step-anim.run.s2{animation-delay:0.35s;}
+.step-anim.run.s3{animation-delay:0.7s;}
+.step-anim.run.s4{animation-delay:1.05s;}
+
+/* Today 列表逐条显现 */
+@keyframes itemIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+.item-anim{opacity:0;}
+.item-anim.run{animation:itemIn 0.4s ease forwards;}
+.item-anim.run.i1{animation-delay:0.1s;}
+.item-anim.run.i2{animation-delay:0.3s;}
+.item-anim.run.i3{animation-delay:0.5s;}
+
+/* 阶段条动画 */
+@keyframes barGrow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+.stage-seg.on,.stage-seg.partial{transform-origin:left;animation:none;}
+.stage-bar-anim .stage-seg.on{animation:barGrow 0.4s ease forwards;}
+.stage-bar-anim .stage-seg.on:nth-child(1){animation-delay:0.1s;}
+.stage-bar-anim .stage-seg.on:nth-child(2){animation-delay:0.25s;}
+.stage-bar-anim .stage-seg.on:nth-child(3){animation-delay:0.4s;}
+.stage-bar-anim .stage-seg.partial{animation:barGrow 0.4s ease 0.55s forwards;}
+
+/* reduced motion */
+@media(prefers-reduced-motion:reduce){
+  .reveal,.reveal-card,.num-anim,.step-anim,.item-anim{animation:none!important;opacity:1!important;transform:none!important;}
+}
+
+/* Responsive */
+@media(max-width:768px){.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}}
+@media(max-width:640px){
+  .hero{padding:120px 24px 72px;}
+  .section{padding:80px 24px;}
+  .split,.split.reverse{grid-template-columns:1fr;gap:48px;}
+  .split.reverse .split-text,.split.reverse .split-visual{order:unset;}
+  .profile-fields{grid-template-columns:1fr;}
+  .cta-section{padding:80px 24px;}
+  footer{padding:24px;}
+}
+</style>
 </head>
 <body>
 
-    <nav>
-        <div class="container nav-container">
-            <a href="/" class="logo-area">
-                <img src="/images/logo.png" alt="回客" style="height: 36px; width: auto; display: block;">
-            </a>
-            <div class="nav-links">
-                <a href="/" class="nav-link">首页</a>
-                <a href="/how-it-works.html" class="nav-link active">工作方式</a>
-                <a href="/partner.html" class="nav-link">创始伙伴</a>
-            </div>
-            <a href="/start.html" class="btn btn-primary" id="nav-cta">开始体验回客</a>
-            <button class="hamburger" id="hamburger" aria-label="菜单">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- 移动端菜单 -->
-    <div class="mobile-menu" id="mobile-menu">
-        <a href="/" class="mobile-menu-link">首页</a>
-        <a href="/how-it-works.html" class="mobile-menu-link active">工作方式</a>
-        <a href="/partner.html" class="mobile-menu-link">创始伙伴</a>
+<!-- Nav -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/index.html"><img src="/images/logo.png" alt="回客" style="height:28px;width:auto;display:block;"></a>
+    <div class="nav-links">
+      <a href="/index.html" class="nav-link">首页</a>
+      <a href="/how-it-works.html" class="nav-link active">工作方式</a>
+      <a href="/partner.html" class="nav-link">创始伙伴</a>
+      <a href="/start.html" class="nav-link">价格</a>
+      <a href="/start.html" class="nav-link">关于</a>
     </div>
+    <a href="/start.html" class="nav-cta">开始体验回客</a>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="/index.html" class="mobile-link">首页</a>
+  <a href="/how-it-works.html" class="mobile-link">工作方式</a>
+  <a href="/partner.html" class="mobile-link">创始伙伴</a>
+  <a href="/start.html" class="mobile-link">开始体验</a>
+</div>
 
-    <!-- Hero -->
-    <section class="page-hero">
-        <div class="page-hero-inner">
-            <h1 class="page-title">回客如何帮助经营客户关系</h1>
-            <p class="page-subtitle">把客户互动，转化为关系理解和下一步行动。</p>
-        </div>
-    </section>
+<!-- Hero -->
+<section class="hero">
+  <h1 class="hero-h1 anim-fadeup anim-delay-1" style="text-align:center;">把客户互动<br>转化为关系理解和下一步行动</h1>
+  <p class="hero-sub anim-fadeup anim-delay-2">一个帮助经营者持续经营客户关系的 Relationship OS。</p>
+</section>
 
-    <!-- Steps -->
-    <div class="steps-wrapper">
-        <div class="container">
-
-            <!-- Step 1 -->
-            <section class="step-section">
-                <div>
-                    <h2 class="step-title">连接</h2>
-                    <div class="step-desc">
-                        <p>从每一次互动开始，让分散的信息形成关系资产。</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="import-visual">
-                        <div style="font-family:'Noto Serif SC',serif;font-size:56px;font-weight:700;color:var(--text-main);line-height:1;margin-bottom:4px;">248</div>
-                        <div class="import-label" style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">段关系档案已建立</div>
-                        <div class="import-formats">
-                            <span class="import-badge">微信记录</span>
-                            <span class="import-badge">消费记录</span>
-                            <span class="import-badge">客户名单</span>
-                        </div>
-                        <div class="import-progress">
-                            <div class="import-progress-bar-bg">
-                                <div class="import-progress-bar"></div>
-                            </div>
-                            <div class="import-progress-label">
-                                <span>正在整理关系档案…</span>
-                                <span>248 / 341</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- Step 2 -->
-            <section class="step-section reverse">
-                <div>
-                    <h2 class="step-title">洞察</h2>
-                    <div class="step-desc">
-                        <p>看见客户关系正在发生什么。</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="relationship-card">
-                        <div class="rel-header">
-                            <div class="rel-avatar">王</div>
-                            <div>
-                                <div class="rel-name">王雪梅</div>
-                                <div class="rel-stage">认识于 2023年3月</div>
-                            </div>
-                            <div class="rel-stage-badge">经常回来</div>
-                        </div>
-                        <div class="rel-body">
-                            <div class="rel-row">
-                                <span class="rel-label">最近互动</span>
-                                <span class="rel-value">72天前</span>
-                            </div>
-                            <div class="rel-row">
-                                <span class="rel-label">到访次数</span>
-                                <span class="rel-value">14次</span>
-                            </div>
-                            <div class="rel-row">
-                                <span class="rel-label">关注重点</span>
-                                <span class="rel-value">长线抗衰 · 皮肤亮泽</span>
-                            </div>
-                            <div class="rel-row">
-                                <span class="rel-label">记忆备注</span>
-                                <span class="rel-value" style="text-align: right; max-width: 60%; font-size: 12px;">皮肤敏感，喜安静</span>
-                            </div>
-                        </div>
-                        <div class="rel-stages">
-                            <div class="rel-stages-label">关系阶段</div>
-                            <div class="rel-stages-track">
-                                <div class="stage-dot done"></div>
-                                <div class="stage-dot done"></div>
-                                <div class="stage-dot active"></div>
-                                <div class="stage-dot future"></div>
-                                <div class="stage-dot future"></div>
-                            </div>
-                            <div class="rel-stages-labels">
-                                <span class="stage-label-text">认识</span>
-                                <span class="stage-label-text">信任</span>
-                                <span class="stage-label-text active-label">常来往</span>
-                                <span class="stage-label-text">推荐</span>
-                                <span class="stage-label-text">沉默</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Step 3 -->
-            <section class="step-section" style="grid-template-columns: 2fr 3fr;">
-                <div>
-                    <h2 class="step-title">行动</h2>
-                    <div class="step-desc">
-                        <p>发现值得关注的人，知道下一次如何连接。</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="decision-card">
-                        <div class="decision-header">
-                            <span class="decision-date">今日建议</span>
-                            <span class="decision-count">3 位客户</span>
-                        </div>
-                        <div class="decision-item">
-                            <div class="decision-top">
-                                <span class="decision-name">王雪梅</span>
-                                <span class="decision-badge badge-urgent">72天未联系</span>
-                            </div>
-                            <div class="decision-reason">过去一年到店14次。这个时机发一条换季关怀，比促销更自然。</div>
-                            <div class="decision-action">→ 发一条换季问候</div>
-                        </div>
-                        <div class="decision-item">
-                            <div class="decision-top">
-                                <span class="decision-name">林婉儿</span>
-                                <span class="decision-badge badge-birthday">生日还有3天</span>
-                            </div>
-                            <div class="decision-reason">生日前主动问候，是建立更深连接的好时机。</div>
-                            <div class="decision-action">→ 提前送上生日祝福</div>
-                        </div>
-                        <div class="decision-item">
-                            <div class="decision-top">
-                                <span class="decision-name">陈雪曼</span>
-                                <span class="decision-badge badge-moment">刚成为常客</span>
-                            </div>
-                            <div class="decision-reason">第4次到访，关系进入新阶段，正是巩固信任的窗口期。</div>
-                            <div class="decision-action">→ 询问本次服务体验</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Step 4 -->
-            <section class="step-section reverse">
-                <div>
-                    <h2 class="step-title">沉淀</h2>
-                    <div class="step-desc">
-                        <p>每一次互动，都成为下一次连接的基础。</p>
-                    </div>
-                </div>
-                <div>
-                    <div class="loop-card">
-                        <div class="loop-header">
-                            <div class="loop-header-title">王雪梅 · 关系更新</div>
-                            <div class="loop-header-sub">今天发生了什么</div>
-                        </div>
-                        <div class="loop-timeline">
-                            <div class="loop-event">
-                                <div class="loop-event-line">
-                                    <div class="loop-dot done"></div>
-                                    <div class="loop-line-seg"></div>
-                                </div>
-                                <div class="loop-event-content">
-                                    <div class="loop-event-title">回客建议联系</div>
-                                    <div class="loop-event-desc">72天未联系，建议发换季关怀</div>
-                                </div>
-                            </div>
-                            <div class="loop-event">
-                                <div class="loop-event-line">
-                                    <div class="loop-dot done"></div>
-                                    <div class="loop-line-seg"></div>
-                                </div>
-                                <div class="loop-event-content">
-                                    <div class="loop-event-title">你发出问候</div>
-                                    <div class="loop-event-desc">记录了这次互动</div>
-                                </div>
-                            </div>
-                            <div class="loop-event">
-                                <div class="loop-event-line">
-                                    <div class="loop-dot done"></div>
-                                    <div class="loop-line-seg"></div>
-                                </div>
-                                <div class="loop-event-content">
-                                    <div class="loop-event-title">她回复并预约</div>
-                                    <div class="loop-event-desc">下周三 14:00 到店</div>
-                                </div>
-                            </div>
-                            <div class="loop-event">
-                                <div class="loop-event-line">
-                                    <div class="loop-dot active"></div>
-                                </div>
-                                <div class="loop-event-content">
-                                    <div class="loop-event-title" style="color:var(--primary);">关系更新，下次更准确</div>
-                                    <div class="loop-event-desc">这次互动已纳入关系理解</div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </div>
-    </div>
-
-    <!-- Terminal -->
-    <section class="terminal-block">
-        <div class="terminal-card-box">
-            <a href="/start.html" class="card-btn">开始体验回客</a>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container footer-container">
+<!-- S1 客户资产 -->
+<section class="section" style="background:var(--bg-off);">
+  <div class="section-inner">
+    <div class="split">
+      <div class="split-text reveal">
+        <div class="section-label">01</div>
+        <h2 class="section-title">客户资产</h2>
+        <p class="section-desc">每位客户，都拥有完整经营档案。</p>
+      </div>
+      <div class="split-visual reveal-card">
+        <div class="ui-card profile-card">
+          <div class="ui-card-header">
+            <div class="ui-dots"><div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div></div>
+            <span class="ui-card-title">客户关系档案</span>
+          </div>
+          <div class="ui-card-body">
+            <div class="profile-header">
+              <div class="profile-avatar">王</div>
+              <div>
+                <div class="profile-name">王雪梅</div>
+                <div class="profile-since">认识于 2023年3月</div>
+              </div>
+              <div style="margin-left:auto;">
+                <div class="profile-stage"><div class="profile-stage-dot"></div>稳定客户</div>
+              </div>
             </div>
-            <div class="footer-right-copyright">© 上海神工天降智能科技有限公司</div>
+            <div class="profile-fields">
+              <div class="profile-field num-anim d1">
+                <div class="profile-field-label">到店次数</div>
+                <div class="profile-field-value accent">14 次</div>
+              </div>
+              <div class="profile-field num-anim d2">
+                <div class="profile-field-label">最近到店</div>
+                <div class="profile-field-value">72 天前</div>
+              </div>
+              <div class="profile-field num-anim d3">
+                <div class="profile-field-label">平均消费</div>
+                <div class="profile-field-value">¥ 680</div>
+              </div>
+              <div class="profile-field num-anim d4">
+                <div class="profile-field-label">消费总额</div>
+                <div class="profile-field-value">¥ 9,520</div>
+              </div>
+            </div>
+            <div class="profile-prefs">
+              <div class="profile-prefs-label">服务偏好</div>
+              <div class="pref-tags">
+                <span class="pref-tag">深层护理</span>
+                <span class="pref-tag">头皮护理</span>
+                <span class="pref-tag">固定技师</span>
+              </div>
+            </div>
+            <div class="profile-last">
+              <span class="profile-last-label">最近互动</span>
+              <span class="profile-last-value">服务后表示满意，未预约下次</span>
+              <span class="profile-last-days">72天前</span>
+            </div>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        // 移动端隐藏申请按钮
-        if (window.innerWidth <= 768) {
-            const cta = document.getElementById('nav-cta');
-            if (cta) cta.style.display = 'none';
-        }
-        // 汉堡菜单
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (hamburger && mobileMenu) {
-            hamburger.addEventListener('click', () => {
-                hamburger.classList.toggle('open');
-                mobileMenu.classList.toggle('open');
-            });
-            mobileMenu.querySelectorAll('.mobile-menu-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.classList.remove('open');
-                    mobileMenu.classList.remove('open');
-                });
-            });
-        }
-    </script>
+<!-- S2 关系理解 -->
+<section class="section">
+  <div class="section-inner">
+    <div class="split reverse">
+      <div class="split-visual reveal-card">
+        <div class="ui-card insight-card">
+          <div class="ui-card-header">
+            <div class="ui-dots"><div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div></div>
+            <span class="ui-card-title">客户洞察</span>
+          </div>
+          <div class="ui-card-body">
+            <div class="insight-client">
+              <div class="insight-client-left">
+                <div class="insight-avatar">王</div>
+                <div>
+                  <div class="insight-name">王雪梅</div>
+                  <div class="insight-status">稳定客户 · 72天未互动</div>
+                </div>
+              </div>
+              <div class="insight-badge">关系健康</div>
+            </div>
+            <div class="insight-section-title">判断依据</div>
+            <div class="insight-facts">
+              <div class="insight-fact"><div class="insight-fact-dot"></div>过去12个月到店14次，消费稳定</div>
+              <div class="insight-fact"><div class="insight-fact-dot"></div>最近72天无互动，超出平均周期</div>
+              <div class="insight-fact"><div class="insight-fact-dot"></div>历次服务反馈均正面，未出现投诉</div>
+            </div>
+            <div class="insight-summary">
+              <div class="insight-summary-label">关系判断</div>
+              <div class="insight-summary-text">王雪梅是稳定客户，关系基础良好。目前沉默期超出正常周期，适合轻联系维护，不需要促销驱动。</div>
+            </div>
+            <div class="insight-stage">
+              <div class="insight-section-title">关系阶段</div>
+              <div class="stage-track stage-bar-anim" id="stage-track">
+                <div class="stage-seg on"></div>
+                <div class="stage-seg on"></div>
+                <div class="stage-seg on"></div>
+                <div class="stage-seg partial"></div>
+                <div class="stage-seg"></div>
+              </div>
+              <div class="stage-labels">
+                <span class="stage-label">初识</span>
+                <span class="stage-label">建立</span>
+                <span class="stage-label active">稳定 ←</span>
+                <span class="stage-label">深度</span>
+                <span class="stage-label">推荐</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="split-text reveal">
+        <div class="section-label">02</div>
+        <h2 class="section-title">洞察</h2>
+        <p class="section-desc">AI 帮助经营者理解客户状态，并发现变化。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 今日行动 -->
+<section class="section" style="background:var(--bg-off);">
+  <div class="section-inner">
+    <div class="split">
+      <div class="split-text reveal">
+        <div class="section-label">03</div>
+        <h2 class="section-title">行动</h2>
+        <p class="section-desc">每天发现值得关注的客户，并知道下一步怎么做。</p>
+      </div>
+      <div class="split-visual reveal-card">
+        <div class="ui-card today-card">
+          <div class="today-header">
+            <span class="today-date">今日 · 8月8日</span>
+            <span class="today-count">3 位值得关注</span>
+          </div>
+          <div class="ui-card-body" style="padding:0;">
+            <div class="today-item item-anim i1">
+              <div class="today-item-top">
+                <span class="today-name">王雪梅</span>
+                <span class="today-badge badge-warm">72天未联系</span>
+              </div>
+              <div class="today-reason">过去一年到店14次，关系稳定但已超出正常沉默期</div>
+              <div class="today-action"><span class="today-action-arrow">→</span>发送换季关怀问候</div>
+            </div>
+            <div class="today-item item-anim i2">
+              <div class="today-item-top">
+                <span class="today-name">林婉儿</span>
+                <span class="today-badge badge-bday">生日还有3天</span>
+              </div>
+              <div class="today-reason">客户生日即将到来，是建立更深连接的自然时机</div>
+              <div class="today-action"><span class="today-action-arrow">→</span>提前送上生日祝福</div>
+            </div>
+            <div class="today-item item-anim i3">
+              <div class="today-item-top">
+                <span class="today-name">陈雪曼</span>
+                <span class="today-badge badge-new">第4次到访</span>
+              </div>
+              <div class="today-reason">关系进入新阶段，正是巩固信任的窗口期</div>
+              <div class="today-action"><span class="today-action-arrow">→</span>询问本次服务体验</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 关系积累 -->
+<section class="section">
+  <div class="section-inner">
+    <div class="split reverse">
+      <div class="split-visual reveal-card">
+        <div class="ui-card loop-card">
+          <div class="ui-card-header">
+            <div class="ui-dots"><div class="ui-dot"></div><div class="ui-dot"></div><div class="ui-dot"></div></div>
+            <span class="ui-card-title">经营积累</span>
+          </div>
+          <div class="ui-card-body">
+            <div class="loop-client-row">
+              <div class="loop-avatar">王</div>
+              <div>
+                <div class="loop-client-name">王雪梅</div>
+              </div>
+            </div>
+            <div class="loop-timeline">
+              <div class="loop-step step-anim s1">
+                <div class="loop-step-line">
+                  <div class="loop-dot done"></div>
+                  <div class="loop-connector"></div>
+                </div>
+                <div class="loop-content">
+                  <div class="loop-step-label">行动</div>
+                  <div class="loop-step-text">发送换季关怀问候</div>
+                </div>
+              </div>
+              <div class="loop-step step-anim s2">
+                <div class="loop-step-line">
+                  <div class="loop-dot done"></div>
+                  <div class="loop-connector"></div>
+                </div>
+                <div class="loop-content">
+                  <div class="loop-step-label">反馈</div>
+                  <div class="loop-step-text">客户回复并预约到店，下周三 14:00</div>
+                </div>
+              </div>
+              <div class="loop-step step-anim s3">
+                <div class="loop-step-line">
+                  <div class="loop-dot active"></div>
+                  <div class="loop-connector"></div>
+                </div>
+                <div class="loop-content">
+                  <div class="loop-step-label">关系更新</div>
+                  <div class="loop-step-text highlight">沉默期结束，客户重新活跃，阶段判断已更新</div>
+                </div>
+              </div>
+              <div class="loop-step step-anim s4">
+                <div class="loop-step-line">
+                  <div class="loop-dot next"></div>
+                </div>
+                <div class="loop-content">
+                  <div class="loop-step-label">下一次建议</div>
+                  <div class="loop-step-text" style="color:var(--text-3);">到店后跟进服务体验，系统将自动更新</div>
+                </div>
+              </div>
+            </div>
+            <div class="loop-update">
+              <div class="loop-update-label">关系资产更新</div>
+              <div class="loop-update-text">这次互动已沉淀，下一次判断将更准确</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="split-text reveal">
+        <div class="section-label">04</div>
+        <h2 class="section-title">积累</h2>
+        <p class="section-desc">每一次互动，都沉淀为下一次经营依据。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">开始体验回客</h2>
+  <a href="/start.html" class="cta-btn">立即申请体验</a>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2026 上海神工天降智能科技有限公司</span>
+</footer>
+
+<script>
+// Nav
+const h=document.getElementById('hamburger'),m=document.getElementById('mobile-menu');
+if(h&&m){h.addEventListener('click',()=>{h.classList.toggle('open');m.classList.toggle('open');});}
+
+// Intersection Observer
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      // 触发子元素动画
+      e.target.querySelectorAll('.num-anim').forEach(el=>el.classList.add('visible'));
+      e.target.querySelectorAll('.item-anim').forEach(el=>el.classList.add('run'));
+      e.target.querySelectorAll('.step-anim').forEach(el=>el.classList.add('run'));
+      const track=e.target.querySelector('.stage-bar-anim');
+      if(track)track.classList.add('active');
+    }
+  });
+},{threshold:0.2});
+document.querySelectorAll('.reveal,.reveal-card').forEach(el=>observer.observe(el));
+</script>
 </body>
 </html>
